@@ -14,4 +14,9 @@
     <Folder Include="Validators\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Exptour.Common\Exptour.Common.csproj" />
+    <ProjectReference Include="..\Exptour.Domain\Exptour.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

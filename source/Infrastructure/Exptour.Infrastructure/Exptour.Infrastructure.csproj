@@ -11,4 +11,8 @@
     <Folder Include="Services\Storage\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Exptour.Application\Exptour.Application.csproj" />
+  </ItemGroup>
+
 </Project>
