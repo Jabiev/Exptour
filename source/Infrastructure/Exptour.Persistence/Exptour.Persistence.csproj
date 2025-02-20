@@ -9,7 +9,16 @@
   <ItemGroup>
     <Folder Include="Concrete\Services\" />
     <Folder Include="Concrete\Repositories\" />
-    <Folder Include="Contexts\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Exptour.Application\Exptour.Application.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,3 +1,5 @@
+using Exptour.API;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -24,7 +26,7 @@ builder.Services.AddSwaggerDocument(configure =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+var app = builder.ConfigureServices();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
