@@ -23,7 +23,7 @@ public static class HostingExtensions
 
         #endregion
 
-        #region Interceptors
+        #region Persistence Services
 
         builder.Services.ConfigurePersistenceServices();
 
