@@ -21,7 +21,7 @@ public class Car : BaseEntity
 
     //RELATIONSHIPs
     public CarModel CarModel { get; set; }
-    public ICollection<Booking> Booking { get; set; }
+    public ICollection<Booking> Bookings { get; set; }
     public ICollection<Offer> Offers { get; set; }
     public ICollection<CarAvailability> Availabilities { get; set; }
     public ICollection<CarImage> CarImages { get; set; }
