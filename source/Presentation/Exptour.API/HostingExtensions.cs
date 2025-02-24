@@ -71,6 +71,17 @@ public static class HostingExtensions
 
         builder.Services.AddHttpContextAccessor();
 
+        #region Google
+
+        builder.Services.AddAuthentication()
+            .AddGoogle(x =>
+            {
+                x.ClientId = builder.Configuration["GoogleSettings:ClientId"];
+                x.ClientSecret = builder.Configuration["GoogleSettings:ClientSecret"];
+            });
+
+        #endregion
+
         return builder.Build();
     }
 }
