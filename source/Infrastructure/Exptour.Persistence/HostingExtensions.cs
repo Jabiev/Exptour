@@ -22,6 +22,7 @@ using Exptour.Application.Abstract.Repositories.RoomImages;
 using Exptour.Application.Abstract.Repositories.Rooms;
 using Exptour.Application.Abstract.Repositories.TourImages;
 using Exptour.Application.Abstract.Repositories.Tours;
+using Exptour.Application.Abstract.Services;
 using Exptour.Persistence.Concrete.Repositories.Bookings;
 using Exptour.Persistence.Concrete.Repositories.CarAvailabilities;
 using Exptour.Persistence.Concrete.Repositories.CarBrands;
@@ -46,6 +47,7 @@ using Exptour.Persistence.Concrete.Repositories.RoomImages;
 using Exptour.Persistence.Concrete.Repositories.Rooms;
 using Exptour.Persistence.Concrete.Repositories.TourImages;
 using Exptour.Persistence.Concrete.Repositories.Tours;
+using Exptour.Persistence.Concrete.Services;
 using Exptour.Persistence.Interceptors;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -111,6 +113,12 @@ public static class HostingExtensions
         services.AddScoped<ITourImageWriteRepository, TourImageWriteRepository>();
         services.AddScoped<ITourReadRepository, TourReadRepository>();
         services.AddScoped<ITourWriteRepository, TourWriteRepository>();
+
+        #endregion
+
+        #region Services
+
+        services.AddScoped<IAuthService, AuthService>();
 
         #endregion
     }

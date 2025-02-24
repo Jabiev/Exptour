@@ -11,6 +11,7 @@ public class ApplicationUser : IdentityUser<Guid>
     public string? RefreshToken { get; set; }
     public DateTime RefreshTokenExpiryTime { get; set; }
     public bool IsAdmin { get; set; }
+    public bool IsActive { get; set; }
 
     [StringLength(50)]
     [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$")]

@@ -44,6 +44,8 @@ app.MapGet("/", handler =>
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
