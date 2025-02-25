@@ -35,9 +35,7 @@ public class BaseService : IBaseService
         string localizedMessage = _configuration[$"AppMessages:{key}:{acceptLanguage}"];
         string state = _configuration[$"AppMessages:{key}:state"];
         if (string.IsNullOrEmpty(localizedMessage))
-        {
             return (key, "");
-        }
         return (localizedMessage, state);
     }
 }

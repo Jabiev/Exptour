@@ -1,9 +1,7 @@
-﻿using Exptour.Common.Shared;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Net;
-using System.Text.Json.Serialization;
 using JsonIgnoreAttribute = Newtonsoft.Json.JsonIgnoreAttribute;
 
 namespace Exptour.Common.Shared;
@@ -45,7 +43,7 @@ public class APIResponse<T> : BaseResponse<T>
     {
     }
 
-    public IActionResult ToActionResult(bool passParam = true)
+    public ActionResult ToActionResult(bool passParam = true)
         => ResponseCode switch
         {
             HttpStatusCode.OK => passParam ? new OkObjectResult(this) : new OkResult(),

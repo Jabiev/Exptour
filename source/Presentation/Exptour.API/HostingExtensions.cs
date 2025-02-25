@@ -1,8 +1,12 @@
 ﻿using Exptour.Domain.Entities;
+using Exptour.Infrastructure;
 using Exptour.Persistence;
 using Exptour.Persistence.Contexts;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Exptour.API;
 
@@ -26,6 +30,75 @@ public static class HostingExtensions
         #region Persistence Services
 
         builder.Services.ConfigurePersistenceServices();
+
+        #endregion
+
+        #region Infrastructure Services
+
+        builder.Services.ConfigureInfrastructureServices();
+
+        #endregion
+
+        #region JWT
+
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    LifetimeValidator = (_, expire, _, _) => expire > DateTime.UtcNow,
+                    ValidIssuer = builder.Configuration["JWTSettings:Issuer"],
+                    ValidAudience = builder.Configuration["JWTSettings:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTSettings:SecurityKey"])),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("OnlyAdmins", policy => policy.RequireRole("Admin"));
+        });
+
+        #endregion
+
+        builder.Services.AddHttpContextAccessor();
+
+        #region Google
+
+        builder.Services.AddAuthentication()
+            .AddGoogle(x =>
+            {
+                x.ClientId = builder.Configuration["GoogleSettings:ClientId"];
+                x.ClientSecret = builder.Configuration["GoogleSettings:ClientSecret"];
+            });
+
+        #endregion
+
+        #region Swagger Document
+
+        builder.Services.AddSwaggerDocument(configure =>
+        {
+            configure.PostProcess = (doc =>
+            {
+                doc.Info.Title = "Explore Tour Guide";
+                doc.Info.Version = "1.0.0";
+                doc.Info.Description = "Booking all you need | Cars, Guides, Hotels, Ready Packages and everything you need";
+                doc.Info.Contact = new NSwag.OpenApiContact()
+                {
+                    Name = "E x p t o u r",
+                    Url = "https://www.youtube.com/@iamjabiev",
+                    Email = "jabieviam@gmail.com"
+                };
+            });
+        });
 
         #endregion
 
