@@ -6,7 +6,6 @@ using Exptour.Common.Infrastructure.Services;
 using Exptour.Common.Shared;
 using Exptour.Domain.Entities;
 using Exptour.Persistence.Contexts;
-using Google.Apis.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -201,40 +200,5 @@ public class AuthService : BaseService, IAuthService
             return response;
         }
         return response;
-    }
-
-    public async Task<APIResponse<GoogleJsonWebSignature.Payload>> ValidateGoogleTokenAsync(string idToken)
-    {
-        var response = new APIResponse<GoogleJsonWebSignature.Payload>();
-
-        if (string.IsNullOrEmpty(idToken))
-        {
-            var msgInvalidToken = GetMessageByLocalization("InvalidToken");
-            response.ResponseCode = HttpStatusCode.BadRequest;
-            response.Message = msgInvalidToken.message;
-            response.State = msgInvalidToken.state;
-            return response;
-        }
-
-        var settings = new GoogleJsonWebSignature.ValidationSettings
-        {
-            Audience = new[] { _configuration["GoogleSettings:ClientId"] }
-        };
-
-        try
-        {
-            var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
-            response.Payload = payload;
-            response.ResponseCode = HttpStatusCode.OK;
-            return response;
-        }
-        catch (Exception)
-        {
-            var msgInvalidToken = GetMessageByLocalization("InvalidToken");
-            response.ResponseCode = HttpStatusCode.InternalServerError;
-            response.Message = msgInvalidToken.message;
-            response.State = msgInvalidToken.state;
-            return response;
-        }
     }
 }

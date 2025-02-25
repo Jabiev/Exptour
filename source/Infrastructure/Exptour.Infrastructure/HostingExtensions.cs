@@ -9,5 +9,6 @@ public static class HostingExtensions
     public static void ConfigureInfrastructureServices(this IServiceCollection services)
     {
         services.AddScoped<IJWTService, JWTService>();
+        services.AddScoped<IGoogleService, GoogleService>();
     }
 }

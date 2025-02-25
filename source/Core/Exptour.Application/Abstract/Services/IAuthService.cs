@@ -9,5 +9,4 @@ public interface IAuthService
     Task<APIResponse<object?>> Register(RegisterDTO registerDTO);
     Task<APIResponse<TokenResponse>> Login(SignInDTO signInDTO);
     Task<APIResponse<TokenResponse>> RefreshToken(string requestRefreshToken);
-    Task<APIResponse<GoogleJsonWebSignature.Payload>> ValidateGoogleTokenAsync(string idToken);
 }

@@ -11,9 +11,11 @@ namespace Exptour.API.Controllers;
 public class AccountsController : ControllerBase
 {
     private readonly IAuthService _authService;
-    public AccountsController(IAuthService authService)
+    private readonly IGoogleService _googleService;
+    public AccountsController(IAuthService authService, IGoogleService googleService)
     {
         _authService = authService;
+        _googleService = googleService;
     }
 
     [HttpPost("Connect/[Action]")]
@@ -34,7 +36,7 @@ public class AccountsController : ControllerBase
     [ProducesResponseType(typeof(APIResponse<GoogleJsonWebSignature.Payload>), StatusCodes.Status200OK)]
     public async Task<ActionResult> ValidateGoogleToken([FromBody] string idToken)
     {
-        var response = await _authService.ValidateGoogleTokenAsync(idToken);
+        var response = await _googleService.ValidateGoogleTokenAsync(idToken);
         return response.ToActionResult();
     }
 
