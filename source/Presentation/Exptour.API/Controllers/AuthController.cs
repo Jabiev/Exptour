@@ -8,11 +8,11 @@ namespace Exptour.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AccountsController : ControllerBase
+public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
     private readonly IGoogleService _googleService;
-    public AccountsController(IAuthService authService, IGoogleService googleService)
+    public AuthController(IAuthService authService, IGoogleService googleService)
     {
         _authService = authService;
         _googleService = googleService;
