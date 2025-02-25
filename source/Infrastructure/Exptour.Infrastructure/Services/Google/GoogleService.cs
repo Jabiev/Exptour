@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 
-namespace Exptour.Infrastructure.Services.JWT;
+namespace Exptour.Infrastructure.Services.Google;
 
 public class GoogleService : BaseService, IGoogleService
 {
