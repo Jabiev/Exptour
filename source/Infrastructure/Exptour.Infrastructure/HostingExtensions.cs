@@ -1,4 +1,5 @@
 ﻿using Exptour.Application.Abstract.Services;
+using Exptour.Infrastructure.Services;
 using Exptour.Infrastructure.Services.Google;
 using Exptour.Infrastructure.Services.JWT;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,5 +12,6 @@ public static class HostingExtensions
     {
         services.AddScoped<IJWTService, JWTService>();
         services.AddScoped<IGoogleService, GoogleService>();
+        services.AddScoped<IMailService, MailService>();
     }
 }

@@ -10,12 +10,10 @@ namespace Exptour.Infrastructure.Services.Google;
 
 public class GoogleService : BaseService, IGoogleService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IConfiguration _configuration;
 
     public GoogleService(IHttpContextAccessor httpContextAccessor, IConfiguration configuration) : base(httpContextAccessor, configuration)
     {
-        _httpContextAccessor = httpContextAccessor;
         _configuration = configuration;
     }
 

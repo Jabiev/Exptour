@@ -1,5 +1,6 @@
 ﻿using Exptour.Application.Abstract.Services;
 using Exptour.Application.DTOs.Auth;
+using Exptour.Application.DTOs.Mail;
 using Exptour.Common.Shared;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +13,12 @@ public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
     private readonly IGoogleService _googleService;
-    public AuthController(IAuthService authService, IGoogleService googleService)
+    private readonly IMailService _mailService;
+    public AuthController(IAuthService authService, IGoogleService googleService, IMailService mailService)
     {
         _authService = authService;
         _googleService = googleService;
+        _mailService = mailService;
     }
 
     [HttpPost("Connect/[Action]")]
@@ -61,5 +64,17 @@ public class AuthController : ControllerBase
         var response = await _authService.Register(registerDTO);
         return response.ToActionResult();
     }
+
+    //[HttpPost("[Action]")]
+    //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    //[ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    //[ProducesResponseType(typeof(APIResponse<TokenResponse>), StatusCodes.Status200OK)]
+    ////please generate for sentmail method
+    //public async Task<ActionResult> Send(MailRequestDTO mailRequestDTO)
+    //{
+    //    var response = await _mailService.SendMailAsync(mailRequestDTO);
+    //    return response.ToActionResult();
+    //}
 
 }
