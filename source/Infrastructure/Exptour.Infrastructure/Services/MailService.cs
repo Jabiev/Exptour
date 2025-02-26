@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Mail;
 
-namespace Exptour.Persistence.Concrete.Services;
+namespace Exptour.Infrastructure.Services;
 
 public class MailService : BaseService, IMailService
 {
