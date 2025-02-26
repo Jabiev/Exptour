@@ -119,6 +119,7 @@ public static class HostingExtensions
         #region Services
 
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IMailService, MailService>();
 
         #endregion
     }
