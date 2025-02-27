@@ -77,4 +77,25 @@ public class AuthController : ControllerBase
     //    return response.ToActionResult();
     //}
 
+    [HttpPost("[Action]")]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(APIResponse<EmptyResult>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> ResetPasswordRequest(PasswordResetDTO passwordResetDTO)
+    {
+        var response = await _authService.PasswordResetAsnyc(passwordResetDTO);
+        return response.ToActionResult();
+    }
+
+    [HttpPost("[Action]")]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(APIResponse<bool>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> VerifyResetToken([FromBody] VerifyResetTokenDto request)
+    {
+        var response = await _authService.VerifyResetTokenAsync(request);
+        return response.ToActionResult();
+    }
 }
