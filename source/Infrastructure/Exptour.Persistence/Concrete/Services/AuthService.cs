@@ -1,6 +1,8 @@
 ﻿using Exptour.Application.Abstract.Services;
 using Exptour.Application.DTOs.Auth;
+using Exptour.Application.DTOs.Mail;
 using Exptour.Application.Validators.Auth;
+using Exptour.Application.Validators.Mail;
 using Exptour.Common.Helpers;
 using Exptour.Common.Infrastructure.Services;
 using Exptour.Common.Shared;
@@ -21,12 +23,14 @@ public class AuthService : BaseService, IAuthService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IJWTService _jWTService;
+    private readonly IMailService _mailService;
     private readonly IConfiguration _configuration;
     private readonly TourismManagementDbContext _tourismManagementDbContext;
 
     public AuthService(UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         IJWTService jWTService,
+        IMailService mailService,
         IConfiguration configuration,
         IHttpContextAccessor httpContextAccessor,
         TourismManagementDbContext tourismManagementDbContext) : base(httpContextAccessor, configuration)
@@ -34,6 +38,7 @@ public class AuthService : BaseService, IAuthService
         _userManager = userManager;
         _signInManager = signInManager;
         _jWTService = jWTService;
+        _mailService = mailService;
         _configuration = configuration;
         _tourismManagementDbContext = tourismManagementDbContext;
     }
@@ -199,6 +204,90 @@ public class AuthService : BaseService, IAuthService
             response.State = GetMessageByLocalization("Failure").state;
             return response;
         }
+        return response;
+    }
+
+    public async Task<APIResponse<Microsoft.AspNetCore.Mvc.EmptyResult>> PasswordResetAsnyc(PasswordResetDTO passwordResetDTO)
+    {
+        var response = new APIResponse<Microsoft.AspNetCore.Mvc.EmptyResult>();
+
+        PasswordResetDTOValidator validations = new();
+
+        var result = await validations.ValidateAsync(passwordResetDTO);
+
+        if (!result.IsValid)
+        {
+            StringBuilder stringBuilder = new();
+            foreach (var error in result.Errors)
+                stringBuilder.AppendLine(error.ErrorMessage);
+            response.ResponseCode = HttpStatusCode.UnprocessableContent;
+            response.Message = stringBuilder.ToString();
+            response.State = GetMessageByLocalization("InvalidRequest").state;
+            return response;
+        }
+
+        ApplicationUser user = await _userManager.FindByEmailAsync(passwordResetDTO.Email);
+
+        if (user is null)
+        {
+            var msgUserNotFound = GetMessageByLocalization("UserDoesNotFound");
+            response.Message = msgUserNotFound.message;
+            response.ResponseCode = HttpStatusCode.NotFound;
+            response.State = msgUserNotFound.state;
+            return response;
+        }
+
+        string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+        resetToken = resetToken.UrlEncode();
+
+        await _mailService.SendPasswordResetMailAsync(passwordResetDTO.Email, user.Id.ToString(), resetToken);
+
+        return new APIResponse<Microsoft.AspNetCore.Mvc.EmptyResult>();
+    }
+
+    public async Task<APIResponse<bool>> VerifyResetTokenAsync(VerifyResetTokenDto verifyResetTokenDto)
+    {
+        var response = new APIResponse<bool>();
+
+        VerifyResetTokenDTOValidator validations = new();
+
+        var result = await validations.ValidateAsync(verifyResetTokenDto);
+
+        if (!result.IsValid)
+        {
+            StringBuilder stringBuilder = new();
+            foreach (var error in result.Errors)
+                stringBuilder.AppendLine(error.ErrorMessage);
+            response.ResponseCode = HttpStatusCode.UnprocessableContent;
+            response.Message = stringBuilder.ToString();
+            response.State = GetMessageByLocalization("InvalidRequest").state;
+            return response;
+        }
+
+        ApplicationUser user = await _userManager.FindByIdAsync(verifyResetTokenDto.UserId);
+        if (user is null)
+        {
+            var msgUserNotFound = GetMessageByLocalization("UserDoesNotFound");
+            response.Message = msgUserNotFound.message;
+            response.ResponseCode = HttpStatusCode.NotFound;
+            response.State = msgUserNotFound.state;
+            response.Payload = false;
+            return response;
+        }
+
+        string resetToken = verifyResetTokenDto.ResetToken.UrlDecode();
+
+        response.Payload = await _userManager.VerifyUserTokenAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", resetToken);
+        if (!response.Payload)
+        {
+            var msgInvalidResetToken = GetMessageByLocalization("InvalidResetToken");
+            response.Message = msgInvalidResetToken.message;
+            response.ResponseCode = HttpStatusCode.BadRequest;
+            response.State = msgInvalidResetToken.state;
+            return response;
+        }
+
+        response.ResponseCode = HttpStatusCode.OK;
         return response;
     }
 }
