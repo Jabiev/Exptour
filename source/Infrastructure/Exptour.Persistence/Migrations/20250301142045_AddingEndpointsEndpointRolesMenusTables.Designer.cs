@@ -3,6 +3,7 @@ using System;
 using Exptour.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Exptour.Persistence.Migrations
 {
     [DbContext(typeof(TourismManagementDbContext))]
-    partial class TourismManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250301142045_AddingEndpointsEndpointRolesMenusTables")]
+    partial class AddingEndpointsEndpointRolesMenusTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1060,6 +1063,76 @@ namespace Exptour.Persistence.Migrations
                     b.ToTable("PaymentHistories");
                 });
 
+            modelBuilder.Entity("Exptour.Domain.Entities.Permission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NameAR")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("NameEN")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Permissions");
+                });
+
+            modelBuilder.Entity("Exptour.Domain.Entities.RolePermission", b =>
+                {
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PermissionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("RoleId", "PermissionId");
+
+                    b.HasIndex("PermissionId");
+
+                    b.ToTable("RolePermissions");
+                });
+
             modelBuilder.Entity("Exptour.Domain.Entities.Room", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1702,6 +1775,25 @@ namespace Exptour.Persistence.Migrations
                     b.Navigation("Payment");
                 });
 
+            modelBuilder.Entity("Exptour.Domain.Entities.RolePermission", b =>
+                {
+                    b.HasOne("Exptour.Domain.Entities.Permission", "Permission")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("Exptour.Domain.Entities.Room", b =>
                 {
                     b.HasOne("Exptour.Domain.Entities.Hotel", "Hotel")
@@ -1957,6 +2049,11 @@ namespace Exptour.Persistence.Migrations
             modelBuilder.Entity("Exptour.Domain.Entities.Payment", b =>
                 {
                     b.Navigation("PaymentHistories");
+                });
+
+            modelBuilder.Entity("Exptour.Domain.Entities.Permission", b =>
+                {
+                    b.Navigation("RolePermissions");
                 });
 
             modelBuilder.Entity("Exptour.Domain.Entities.Room", b =>

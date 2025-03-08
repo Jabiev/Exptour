@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 namespace Exptour.API;
@@ -82,7 +83,7 @@ public static class HostingExtensions
 
         #endregion
 
-        #region Swagger Document
+        #region Swagger
 
         builder.Services.AddSwaggerDocument(configure =>
         {
@@ -97,6 +98,33 @@ public static class HostingExtensions
                     Url = "https://www.youtube.com/@iamjabiev",
                     Email = "jabieviam@gmail.com"
                 };
+            });
+        });
+
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please Enter like 'Bearer {token}' format",
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer"
+            });
+
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] {}
+                }
             });
         });
 

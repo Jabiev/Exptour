@@ -22,6 +22,14 @@ public static class Helper
     {
         return Guid.TryParse(value, out _);
     }
+
+    public static string GetByLanguage(string? En, string? Ar, Language language)
+    {
+        return language.Equals(Language.English) ? En : Ar;
+    }
+
+    public static string GetEmailUsername(this string email)
+        => email.Split('@')[0];
 }
 
 public static class CustomCoders

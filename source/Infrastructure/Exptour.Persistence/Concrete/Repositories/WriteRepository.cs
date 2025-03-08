@@ -28,6 +28,8 @@ public class WriteRepository<T> : IWriteRepository<T> where T : BaseEntity
 
     public void Remove(T entity) => _tourismManagementDbContext.Remove(entity);
 
+    public void RemoveRange(IQueryable<T> entities) => _tourismManagementDbContext.RemoveRange(entities);
+
     public bool Update(T entity)
     {
         EntityEntry entry = Table.Update(entity);

@@ -13,5 +13,6 @@ public static class HostingExtensions
         services.AddScoped<IJWTService, JWTService>();
         services.AddScoped<IGoogleService, GoogleService>();
         services.AddScoped<IMailService, MailService>();
+        services.AddScoped<IApplicationService, ApplicationService>();
     }
 }
