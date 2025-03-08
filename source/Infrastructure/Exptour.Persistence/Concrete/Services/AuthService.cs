@@ -204,6 +204,13 @@ public class AuthService : BaseService, IAuthService
             response.State = GetMessageByLocalization("Failure").state;
             return response;
         }
+
+        await _mailService.SendMailAsync(new string[] { registerDTO.Email }, $"Welcome to {_configuration["Mail:DisplayName"]}", @$"Dear {appUser.UserName},
+            We are excited to welcome you to {_configuration["Mail:DisplayName"]}!
+            Your registration was successful, and you can now start exploring our platform.
+            If you have any questions or need assistance, feel free to contact our support team.
+            <br>Best Regards...<br><br><br> {_configuration["Mail:DisplayName"]} Team");
+
         return response;
     }
 

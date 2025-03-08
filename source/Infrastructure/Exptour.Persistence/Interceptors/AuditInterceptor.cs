@@ -1,5 +1,4 @@
-﻿using Exptour.Common.Helpers;
-using Exptour.Domain.Entities.Common;
+﻿using Exptour.Domain.Entities.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
@@ -28,10 +27,10 @@ public class AuditInterceptor : SaveChangesInterceptor
         foreach (var entry in context.ChangeTracker.Entries<BaseEntity>())
         {
             if (entry.State == EntityState.Added)
-                entry.Entity.CreatedDate = DateTime.UtcNow.ToUAE();
+                entry.Entity.CreatedDate = DateTime.UtcNow;
 
             if (entry.State == EntityState.Modified && entry.Properties.Any(p => p.IsModified))
-                entry.Entity.ModifiedDate = DateTime.UtcNow.ToUAE();
+                entry.Entity.ModifiedDate = DateTime.UtcNow;
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Exptour.Application.Abstract.Services;
-using Exptour.Application.DTOs.Mail;
 using Exptour.Common.Infrastructure.Services;
 using Exptour.Common.Shared;
 using Microsoft.AspNetCore.Http;

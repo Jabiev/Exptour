@@ -8,16 +8,17 @@ using Exptour.Application.Abstract.Repositories.Categories;
 using Exptour.Application.Abstract.Repositories.Cities;
 using Exptour.Application.Abstract.Repositories.Countries;
 using Exptour.Application.Abstract.Repositories.Drivers;
+using Exptour.Application.Abstract.Repositories.EndpointRoles;
+using Exptour.Application.Abstract.Repositories.Endpoints;
 using Exptour.Application.Abstract.Repositories.GuideAvailabilities;
 using Exptour.Application.Abstract.Repositories.Guides;
 using Exptour.Application.Abstract.Repositories.HotelImages;
 using Exptour.Application.Abstract.Repositories.Hotels;
 using Exptour.Application.Abstract.Repositories.Languages;
+using Exptour.Application.Abstract.Repositories.Menus;
 using Exptour.Application.Abstract.Repositories.Offers;
 using Exptour.Application.Abstract.Repositories.PaymentHistories;
 using Exptour.Application.Abstract.Repositories.Payments;
-using Exptour.Application.Abstract.Repositories.Permissions;
-using Exptour.Application.Abstract.Repositories.RolePermissions;
 using Exptour.Application.Abstract.Repositories.RoomImages;
 using Exptour.Application.Abstract.Repositories.Rooms;
 using Exptour.Application.Abstract.Repositories.TourImages;
@@ -33,16 +34,17 @@ using Exptour.Persistence.Concrete.Repositories.Categories;
 using Exptour.Persistence.Concrete.Repositories.Cities;
 using Exptour.Persistence.Concrete.Repositories.Countries;
 using Exptour.Persistence.Concrete.Repositories.Drivers;
+using Exptour.Persistence.Concrete.Repositories.EndpointRoles;
+using Exptour.Persistence.Concrete.Repositories.Endpoints;
 using Exptour.Persistence.Concrete.Repositories.GuideAvailabilities;
 using Exptour.Persistence.Concrete.Repositories.Guides;
 using Exptour.Persistence.Concrete.Repositories.HotelImages;
 using Exptour.Persistence.Concrete.Repositories.Hotels;
 using Exptour.Persistence.Concrete.Repositories.Languages;
+using Exptour.Persistence.Concrete.Repositories.Menus;
 using Exptour.Persistence.Concrete.Repositories.Offers;
 using Exptour.Persistence.Concrete.Repositories.PaymentHistories;
 using Exptour.Persistence.Concrete.Repositories.Payments;
-using Exptour.Persistence.Concrete.Repositories.Permissions;
-using Exptour.Persistence.Concrete.Repositories.RolePermissions;
 using Exptour.Persistence.Concrete.Repositories.RoomImages;
 using Exptour.Persistence.Concrete.Repositories.Rooms;
 using Exptour.Persistence.Concrete.Repositories.TourImages;
@@ -85,6 +87,10 @@ public static class HostingExtensions
         services.AddScoped<ICountryWriteRepository, CountryWriteRepository>();
         services.AddScoped<IDriverReadRepository, DriverReadRepository>();
         services.AddScoped<IDriverWriteRepository, DriverWriteRepository>();
+        services.AddScoped<IEndpointRoleReadRepository, EndpointRoleReadRepository>();
+        services.AddScoped<IEndpointRoleWriteRepository, EndpointRoleWriteRepository>();
+        services.AddScoped<IEndpointReadRepository, EndpointReadRepository>();
+        services.AddScoped<IEndpointWriteRepository, EndpointWriteRepository>();
         services.AddScoped<IGuideAvailabilityReadRepository, GuideAvailabilityReadRepository>();
         services.AddScoped<IGuideAvailabilityWriteRepository, GuideAvailabilityWriteRepository>();
         services.AddScoped<IGuideReadRepository, GuideReadRepository>();
@@ -94,6 +100,8 @@ public static class HostingExtensions
         services.AddScoped<IHotelReadRepository, HotelReadRepository>();
         services.AddScoped<IHotelWriteRepository, HotelWriteRepository>();
         services.AddScoped<ILanguageReadRepository, LanguageReadRepository>();
+        services.AddScoped<IMenuReadRepository, MenuReadRepository>();
+        services.AddScoped<IMenuWriteRepository, MenuWriteRepository>();
         services.AddScoped<ILanguageWriteRepository, LanguageWriteRepository>();
         services.AddScoped<IOfferReadRepository, OfferReadRepository>();
         services.AddScoped<IOfferWriteRepository, OfferWriteRepository>();
@@ -101,10 +109,6 @@ public static class HostingExtensions
         services.AddScoped<IPaymentHistoryWriteRepository, PaymentHistoryWriteRepository>();
         services.AddScoped<IPaymentReadRepository, PaymentReadRepository>();
         services.AddScoped<IPaymentWriteRepository, PaymentWriteRepository>();
-        services.AddScoped<IPermissionReadRepository, PermissionReadRepository>();
-        services.AddScoped<IPermissionWriteRepository, PermissionWriteRepository>();
-        services.AddScoped<IRolePermissionReadRepository, RolePermissionReadRepository>();
-        services.AddScoped<IRolePermissionWriteRepository, RolePermissionWriteRepository>();
         services.AddScoped<IRoomImageReadRepository, RoomImageReadRepository>();
         services.AddScoped<IRoomImageWriteRepository, RoomImageWriteRepository>();
         services.AddScoped<IRoomReadRepository, RoomReadRepository>();
@@ -120,6 +124,8 @@ public static class HostingExtensions
 
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IRoleService, RoleService>();
+        services.AddScoped<IAuthorizationEndpointService, AuthorizationEndpointService>();
 
         #endregion
     }
