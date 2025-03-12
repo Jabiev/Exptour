@@ -1,4 +1,5 @@
 ﻿using Exptour.Application.Abstract.Services;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -37,8 +38,7 @@ public class JWTService : IJWTService
     public string GenerateRefreshToken()
     {
         byte[] bytes = new byte[64];
-        var randomNumber = RandomNumberGenerator.Create();
-        randomNumber.GetBytes(bytes);
-        return Convert.ToBase64String(bytes);
+        RandomNumberGenerator.Fill(bytes);
+        return WebEncoders.Base64UrlEncode(bytes);
     }
 }

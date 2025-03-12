@@ -130,6 +130,8 @@ public static class HostingExtensions
 
         #endregion
 
+        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
         return builder.Build();
     }
 }
