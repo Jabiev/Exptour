@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Exptour.Application.Abstract.Repositories.Countries;
 using Exptour.Application.Abstract.Services;
+using Exptour.Application.DTOs.City;
 using Exptour.Application.DTOs.Country;
 using Exptour.Application.Validators.Country;
 using Exptour.Common.Helpers;
@@ -37,7 +38,7 @@ public class CountryService : BaseService, ICountryService
         var response = new APIResponse<CountryResponse>();
 
         CountryDTOValidator validations = new();
-        var result = validations.Validate(countryDTO);
+        var result = await validations.ValidateAsync(countryDTO);
 
         if (!result.IsValid)
         {
@@ -93,7 +94,7 @@ public class CountryService : BaseService, ICountryService
         //if there are cities in this country, delete them first | LOOK AT THIS
         if (await _countryReadRepository.Table.AnyAsync(c => c.Id == Guid.Parse(id) && c.Cities.Count > 0))
         {
-            var msgCountryHasCities = GetMessageByLocalization("CountryHasCities");
+            var msgCountryHasCities = GetMessageByLocalization("EntityHasAssociatedEntities");
             response.Message = msgCountryHasCities.message;
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.State = msgCountryHasCities.state;
@@ -134,6 +135,49 @@ public class CountryService : BaseService, ICountryService
         response.Payload = new Pagination<CountryResponse>()
         {
             Items = await countries.Select(x => _mapper.Map<CountryResponse>(x)).ToListAsync(),
+            PageIndex = pageNumber,
+            PageSize = isPaginated ? take : countriesCount,
+            TotalCount = countriesCount,
+            TotalPage = isPaginated ? (int)Math.Ceiling((double)countriesCount / take) : 1
+        };
+        return response;
+    }
+
+    public async Task<APIResponse<Pagination<CountryWithCitiesResponse>>> GetAllWithCitiesAsync(int pageNumber = 1, int take = 10, bool isPaginated = false)
+    {
+        var response = new APIResponse<Pagination<CountryWithCitiesResponse>>();
+
+        if (pageNumber < 1 || take < 1)
+        {
+            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            response.ResponseCode = HttpStatusCode.BadRequest;
+            response.Message = msgInvalidRequest.message;
+            response.State = msgInvalidRequest.state;
+            return response;
+        }
+
+        var countriesQuery = _countryReadRepository.GetAll(
+            c => !c.IsDeleted,
+            include: c => c.Include(c => c.Cities),
+            orderBy: c => c.Name
+        );
+
+        var countriesCount = await countriesQuery.CountAsync();
+
+        if (isPaginated)
+            countriesQuery = countriesQuery
+                .Skip((pageNumber - 1) * take)
+                .Take(take);
+
+        var countries = await countriesQuery
+            .Select(c => new CountryWithCitiesResponse(c.Id, c.Name, c.Cities
+                .Select(city => new CountryCityResponse(city.Id, city.Name))
+                .ToList()))
+            .ToListAsync();
+
+        response.Payload = new Pagination<CountryWithCitiesResponse>()
+        {
+            Items = countries,
             PageIndex = pageNumber,
             PageSize = isPaginated ? take : countriesCount,
             TotalCount = countriesCount,

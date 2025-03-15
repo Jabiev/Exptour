@@ -6,6 +6,7 @@ namespace Exptour.Application.Abstract.Services;
 public interface ICountryService
 {
     Task<APIResponse<Pagination<CountryResponse>>> GetAllAsync(int pageNumber = 1, int take = 10, bool isPaginated = false);
+    Task<APIResponse<Pagination<CountryWithCitiesResponse>>> GetAllWithCitiesAsync(int pageNumber = 1, int take = 10, bool isPaginated = false);
     Task<APIResponse<CountryResponse>> GetByIdAsync(string id);
     Task<APIResponse<Pagination<CountryResponse>>> GetByNameAsync(string clue, int pageNumber = 1, int take = 10, bool isPaginated = false);
     Task<APIResponse<CountryResponse>> CreateAsync(CountryDTO countryDTO);

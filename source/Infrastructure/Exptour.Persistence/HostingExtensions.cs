@@ -127,6 +127,7 @@ public static class HostingExtensions
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IAuthorizationEndpointService, AuthorizationEndpointService>();
         services.AddScoped<ICountryService, CountryService>();
+        services.AddScoped<ICityService, CityService>();
 
         #endregion
     }

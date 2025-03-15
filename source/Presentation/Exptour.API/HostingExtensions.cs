@@ -40,7 +40,7 @@ public static class HostingExtensions
 
         #endregion
 
-        #region JWT
+        #region JWT & Authentication & Authorization
 
         builder.Services.AddAuthentication(options =>
         {
@@ -66,6 +66,11 @@ public static class HostingExtensions
         builder.Services.AddAuthorization(options =>
         {
             options.AddPolicy("OnlyAdmins", policy => policy.RequireRole("Admin"));
+            options.AddPolicy("OnlyModerators", policy => policy.RequireRole("Moderator"));
+            options.AddPolicy("AdminsOrModerators", policy => policy.RequireRole("Admin", "Moderator"));
+
+            options.AddPolicy("VerifiedEmailsOnly", policy => policy.RequireClaim("EmailVerified", "true"));
+            options.AddPolicy("VIPUsers", policy => policy.RequireClaim("SubscriptionLevel", "VIP"));
         });
 
         #endregion

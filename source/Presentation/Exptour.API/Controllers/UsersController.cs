@@ -24,9 +24,9 @@ public class UsersController : ControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(APIResponse<EmptyResult>), StatusCodes.Status200OK)]
-    public async Task<ActionResult> UpdatePassword(UpdatePasswordDTO updatePasswordDTO)
+    public async Task<ActionResult> UpdatePassword([FromBody] UpdatePasswordDTO request)
     {
-        var response = await _userService.UpdatePasswordAsync(updatePasswordDTO);
+        var response = await _userService.UpdatePasswordAsync(request);
         return response.ToActionResult();
     }
 
@@ -37,7 +37,9 @@ public class UsersController : ControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(APIResponse<Pagination<UserResponse>>), StatusCodes.Status200OK)]
-    public async Task<ActionResult> GetAllUsers(int pageNumber, int take, bool isPaginated)
+    public async Task<ActionResult> GetAllUsers([FromQuery] int pageNumber,
+        [FromQuery] int take,
+        [FromQuery] bool isPaginated)
     {
         var response = await _userService.GetAllUsersAsync(pageNumber, take, isPaginated);
         return response.ToActionResult();
@@ -63,9 +65,9 @@ public class UsersController : ControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(APIResponse<EmptyResult>), StatusCodes.Status200OK)]
-    public async Task<ActionResult> AssignRoleToUser(AssignRoleDTO assignRoleDTO)
+    public async Task<ActionResult> AssignRoleToUser([FromBody] AssignRoleDTO request)
     {
-        var response = await _userService.AssignRoleToUserAsnyc(assignRoleDTO);
+        var response = await _userService.AssignRoleToUserAsnyc(request);
         return response.ToActionResult();
     }
 
