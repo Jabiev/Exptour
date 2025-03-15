@@ -14,6 +14,7 @@ public class AuthController : ControllerBase
     private readonly IAuthService _authService;
     private readonly IGoogleService _googleService;
     private readonly IMailService _mailService;
+
     public AuthController(IAuthService authService, IGoogleService googleService, IMailService mailService)
     {
         _authService = authService;
@@ -26,9 +27,9 @@ public class AuthController : ControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(APIResponse<TokenResponse>), StatusCodes.Status200OK)]
-    public async Task<ActionResult> Login(SignInDTO signInDTO)
+    public async Task<ActionResult> Login([FromBody] SignInDTO request)
     {
-        var response = await _authService.Login(signInDTO);
+        var response = await _authService.Login(request);
         return response.ToActionResult();
     }
 
@@ -48,7 +49,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(APIResponse<TokenResponse>), StatusCodes.Status200OK)]
-    public async Task<ActionResult> RefreshToken(string refreshToken)
+    public async Task<ActionResult> RefreshToken([FromQuery] string refreshToken)
     {
         var response = await _authService.RefreshToken(refreshToken);
         return response.ToActionResult();
@@ -59,9 +60,9 @@ public class AuthController : ControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(APIResponse<object?>), StatusCodes.Status200OK)]
-    public async Task<ActionResult> Register(RegisterDTO registerDTO)
+    public async Task<ActionResult> Register([FromBody] RegisterDTO request)
     {
-        var response = await _authService.Register(registerDTO);
+        var response = await _authService.Register(request);
         return response.ToActionResult();
     }
 
@@ -82,9 +83,9 @@ public class AuthController : ControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(APIResponse<EmptyResult>), StatusCodes.Status200OK)]
-    public async Task<ActionResult> ResetPasswordRequest(PasswordResetDTO passwordResetDTO)
+    public async Task<ActionResult> ResetPasswordRequest([FromBody] PasswordResetDTO request)
     {
-        var response = await _authService.PasswordResetAsnyc(passwordResetDTO);
+        var response = await _authService.PasswordResetAsnyc(request);
         return response.ToActionResult();
     }
 

@@ -12,6 +12,7 @@ public class AssignRoleDTOValidator : AbstractValidator<AssignRoleDTO>
             .NotEmpty()
             .WithMessage("UserId is required")
             .Must(userId => userId.IsValidGuid()).WithMessage("UserId is not valid");
+
         RuleFor(x => x.Roles)
             .NotEmpty().WithMessage("At least one role must be assigned.")
             .Must(roles => roles.All(role => !string.IsNullOrWhiteSpace(role)))

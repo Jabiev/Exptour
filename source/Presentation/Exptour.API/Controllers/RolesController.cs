@@ -27,7 +27,9 @@ public class RolesController : ControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(APIResponse<Pagination<RoleResponse>>), StatusCodes.Status200OK)]
-    public async Task<ActionResult> GetRoles(int pageNumber, int take, bool isPaginated)
+    public async Task<ActionResult> GetRoles([FromQuery] int pageNumber,
+        [FromQuery] int take,
+        [FromQuery] bool isPaginated)
     {
         var response = await _roleService.GetAllRolesAsync(pageNumber, take, isPaginated);
         return response.ToActionResult();

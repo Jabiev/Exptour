@@ -2,6 +2,7 @@
 using Exptour.Domain.Entities.Common;
 using Exptour.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Linq.Expressions;
 
 namespace Exptour.Persistence.Concrete.Repositories;
@@ -17,23 +18,17 @@ public class ReadRepository<T> : IReadRepository<T> where T : BaseEntity
     public DbSet<T> Table => _tourismManagementDbContext.Set<T>();
 
     public IQueryable<T> GetAll() => Table.AsNoTracking();
-    public IQueryable<T> GetAll(Expression<Func<T, bool>> expression = null,
-        Expression<Func<T, object?>> orderBy = null,
-        bool ascending = true,
-        bool isTracking = true,
-        int skip = 0,
-        int take = 10,
-        params string[] includes
-        )
+
+    public IQueryable<T> GetAll(Expression<Func<T, bool>> expression,
+        Func<IQueryable<T>, IQueryable<T>>? include = null,
+        Expression<Func<T, object?>>? orderBy = null,
+        bool ascending = true)
     {
         IQueryable<T> query = Table;
 
-        if (includes is not null)
+        if (include is not null)
         {
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
+            query = include(query);
         }
 
         if (expression is not null)
@@ -43,13 +38,6 @@ public class ReadRepository<T> : IReadRepository<T> where T : BaseEntity
             query = ascending
                 ? query.OrderBy(orderBy)
                 : query.OrderByDescending(orderBy);
-
-        query = query
-            .Skip(skip)
-            .Take(take);
-
-        if (!isTracking)
-            query = query.AsNoTracking();
 
         return query;
     }
@@ -63,6 +51,16 @@ public class ReadRepository<T> : IReadRepository<T> where T : BaseEntity
     public async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> expression, bool tracking = true)
         => await (tracking ? Table : Table.AsNoTracking())
         .FirstOrDefaultAsync(expression);
+
+    public async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> expression, Func<IQueryable<T>, IQueryable<T>> include)
+    {
+        IQueryable<T> query = Table;
+
+        if (include is not null)
+            query = include(query);
+
+        return await query.FirstOrDefaultAsync(expression);
+    }
 
     public async Task<T?> GetByIdAsync(Guid id, bool tracking = true)
         => await (tracking ? Table : Table.AsNoTracking())
