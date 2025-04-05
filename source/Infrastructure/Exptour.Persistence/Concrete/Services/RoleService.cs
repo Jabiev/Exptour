@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Text;
+using static Exptour.Application.Constants.ExceptionMessages;
 
 namespace Exptour.Persistence.Concrete.Services;
 
@@ -34,7 +35,7 @@ public class RoleService : BaseService, IRoleService
         //if (await _roleManager.RoleExistsAsync(roleName))
         if (await _roleManager.Roles.AnyAsync(r => r.Name.ToLower() == roleName.ToLower()))
         {
-            var msgRoleExists = GetMessageByLocalization("RoleAlreadyExists");
+            var msgRoleExists = GetMessageByLocalization(RoleAlreadyExists);
             response.Message = msgRoleExists.message;
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.State = msgRoleExists.state;
@@ -50,7 +51,7 @@ public class RoleService : BaseService, IRoleService
                 stringBuilder.AppendLine(error.Description);
             response.ResponseCode = HttpStatusCode.UnprocessableContent;
             response.Message = stringBuilder.ToString();
-            response.State = GetMessageByLocalization("Failure").state;
+            response.State = GetMessageByLocalization(Failure).state;
             return response;
         }
 
@@ -64,7 +65,7 @@ public class RoleService : BaseService, IRoleService
 
         if (string.IsNullOrEmpty(id) || !id.IsValidGuid())
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
@@ -74,7 +75,7 @@ public class RoleService : BaseService, IRoleService
         var role = await _roleManager.FindByIdAsync(id);
         if (role is null)
         {
-            var msgRoleNotFound = GetMessageByLocalization("NotFound");
+            var msgRoleNotFound = GetMessageByLocalization(NotFound);
             response.Message = msgRoleNotFound.message;
             response.ResponseCode = HttpStatusCode.NotFound;
             response.State = msgRoleNotFound.state;
@@ -84,7 +85,7 @@ public class RoleService : BaseService, IRoleService
         var usersInRole = await _userManager.GetUsersInRoleAsync(role.Name);
         if (usersInRole.Any())
         {
-            var msgRoleInUse = GetMessageByLocalization("RoleInUse");
+            var msgRoleInUse = GetMessageByLocalization(RoleInUse);
             response.Message = msgRoleInUse.message;
             response.ResponseCode = HttpStatusCode.UnprocessableEntity;
             response.State = msgRoleInUse.state;
@@ -99,7 +100,7 @@ public class RoleService : BaseService, IRoleService
                 stringBuilder.AppendLine(error.Description);
             response.ResponseCode = HttpStatusCode.UnprocessableContent;
             response.Message = stringBuilder.ToString();
-            response.State = GetMessageByLocalization("Failure").state;
+            response.State = GetMessageByLocalization(Failure).state;
             return response;
         }
 
@@ -113,7 +114,7 @@ public class RoleService : BaseService, IRoleService
 
         if (pageNumber < 1 || take < 1)
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;

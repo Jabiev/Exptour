@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Text;
+using static Exptour.Application.Constants.ExceptionMessages;
 
 namespace Exptour.Persistence.Concrete.Services;
 
@@ -50,23 +51,24 @@ public class CityService : BaseService, ICityService
                 stringBuilder.AppendLine(error.ErrorMessage);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = stringBuilder.ToString();
-            response.State = GetMessageByLocalization("InvalidRequest").state;
+            response.State = GetMessageByLocalization(InvalidRequest).state;
             return response;
         }
 
         var country = await _countryService.GetByIdAsync(cityDto.CountryId);
         if (country.Payload is null)
         {
-            var msgNoEntityAssociation = GetMessageByLocalization("NoEntityAssociation");
+            var msgNoEntityAssociation = GetMessageByLocalization(NoEntityAssociation);
             response.Message = msgNoEntityAssociation.message;
             response.ResponseCode = HttpStatusCode.NotFound;
             response.State = msgNoEntityAssociation.state;
             return response;
         }
 
-        if (await _cityReadRepository.Table.AnyAsync(c => c.Name.ToLower() == cityDto.Name.ToLower() && c.IsDeleted == false && c.CountryId == Guid.Parse(cityDto.CountryId)))
+        if (await _cityReadRepository.Table.AnyAsync(c => c.Name.ToLower() == cityDto.Name.ToLower() && c.IsDeleted == false
+            && c.CountryId == Guid.Parse(cityDto.CountryId)))
         {
-            var msgCityExists = GetMessageByLocalization("AlreadyExists");
+            var msgCityExists = GetMessageByLocalization(AlreadyExists);
             response.Message = msgCityExists.message;
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.State = msgCityExists.state;
@@ -87,17 +89,18 @@ public class CityService : BaseService, ICityService
 
         if (!id.IsValidGuid())
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
             return response;
         }
 
-        var city = await _cityReadRepository.FirstOrDefaultAsync(c => c.Id == Guid.Parse(id) && c.IsDeleted == false, include: c => c.Include(c => c.Country));
+        var city = await _cityReadRepository.FirstOrDefaultAsync(c => c.Id == Guid.Parse(id) && c.IsDeleted == false,
+            include: c => c.Include(c => c.Country));
         if (city is null)
         {
-            var msgNotFound = GetMessageByLocalization("NotFound");
+            var msgNotFound = GetMessageByLocalization(NotFound);
             response.Message = msgNotFound.message;
             response.ResponseCode = HttpStatusCode.NotFound;
             response.State = msgNotFound.state;
@@ -118,7 +121,7 @@ public class CityService : BaseService, ICityService
 
         if (pageNumber < 1 || take < 1)
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
@@ -151,7 +154,7 @@ public class CityService : BaseService, ICityService
 
         if (pageNumber < 1 || take < 1)
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
@@ -160,7 +163,7 @@ public class CityService : BaseService, ICityService
 
         if (!countryId.IsValidGuid())
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
@@ -168,10 +171,12 @@ public class CityService : BaseService, ICityService
         }
 
         var cities = isPaginated
-            ? _cityReadRepository.GetAll(c => !c.IsDeleted && c.CountryId == Guid.Parse(countryId), include: c => c.Include(c => c.Country))
+            ? _cityReadRepository.GetAll(c => !c.IsDeleted && c.CountryId == Guid.Parse(countryId),
+                include: c => c.Include(c => c.Country))
                 .Skip((pageNumber - 1) * take)
                 .Take(take)
-            : _cityReadRepository.GetAll(c => !c.IsDeleted && c.CountryId == Guid.Parse(countryId), include: c => c.Include(c => c.Country));
+            : _cityReadRepository.GetAll(c => !c.IsDeleted && c.CountryId == Guid.Parse(countryId),
+                include: c => c.Include(c => c.Country));
 
         var citiesCount = await cities.CountAsync();
 
@@ -192,17 +197,18 @@ public class CityService : BaseService, ICityService
 
         if (!id.IsValidGuid())
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
             return response;
         }
 
-        var city = await _cityReadRepository.FirstOrDefaultAsync(c => c.Id == Guid.Parse(id) && c.IsDeleted == false, include: c => c.Include(c => c.Country));
+        var city = await _cityReadRepository.FirstOrDefaultAsync(c => c.Id == Guid.Parse(id) && c.IsDeleted == false,
+            include: c => c.Include(c => c.Country));
         if (city is null)
         {
-            var msgNotFound = GetMessageByLocalization("NotFound");
+            var msgNotFound = GetMessageByLocalization(NotFound);
             response.Message = msgNotFound.message;
             response.ResponseCode = HttpStatusCode.NotFound;
             response.State = msgNotFound.state;
@@ -219,7 +225,7 @@ public class CityService : BaseService, ICityService
 
         if (pageNumber < 1 || take < 1)
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
@@ -227,10 +233,12 @@ public class CityService : BaseService, ICityService
         }
 
         var cities = isPaginated
-            ? _cityReadRepository.GetAll(c => !c.IsDeleted && c.Name.ToLower().Contains(clue.ToLower()), include: c => c.Include(c => c.Country))
+            ? _cityReadRepository.GetAll(c => !c.IsDeleted && c.Name.ToLower().Contains(clue.ToLower()),
+                include: c => c.Include(c => c.Country))
                 .Skip((pageNumber - 1) * take)
                 .Take(take)
-            : _cityReadRepository.GetAll(c => !c.IsDeleted && c.Name.ToLower().Contains(clue.ToLower()), include: c => c.Include(c => c.Country));
+            : _cityReadRepository.GetAll(c => !c.IsDeleted && c.Name.ToLower().Contains(clue.ToLower()),
+                include: c => c.Include(c => c.Country));
 
         var citiesCount = await cities.CountAsync();
 
@@ -251,7 +259,7 @@ public class CityService : BaseService, ICityService
 
         if (!id.IsValidGuid())
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
@@ -268,34 +276,36 @@ public class CityService : BaseService, ICityService
                 stringBuilder.AppendLine(error.ErrorMessage);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = stringBuilder.ToString();
-            response.State = GetMessageByLocalization("InvalidRequest").state;
+            response.State = GetMessageByLocalization(InvalidRequest).state;
             return response;
         }
 
-        var city = await _cityReadRepository.FirstOrDefaultAsync(c => c.Id == Guid.Parse(id) && c.IsDeleted == false, include: c => c.Include(c => c.Country));
+        var city = await _cityReadRepository.FirstOrDefaultAsync(c => c.Id == Guid.Parse(id) && c.IsDeleted == false,
+            include: c => c.Include(c => c.Country));
         if (city is null)
         {
-            var msgNotFound = GetMessageByLocalization("NotFound");
+            var msgNotFound = GetMessageByLocalization(NotFound);
             response.Message = msgNotFound.message;
             response.ResponseCode = HttpStatusCode.NotFound;
             response.State = msgNotFound.state;
             return response;
         }
 
-        if (await _cityReadRepository.Table.AnyAsync(c => c.Name.ToLower() == updateCityDto.Name.ToLower() && c.IsDeleted == false && c.Id != Guid.Parse(id)))
+        if (await _cityReadRepository.Table.AnyAsync(c => c.Name.ToLower() == updateCityDto.Name.ToLower() && c.IsDeleted == false
+            && c.Id != Guid.Parse(id)))
         {
-            var msgInvalidRequest = GetMessageByLocalization("AlreadyExists");
+            var msgInvalidRequest = GetMessageByLocalization(AlreadyExists);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
             return response;
         }
 
-        if(!string.IsNullOrEmpty(updateCityDto.CountryId))
+        if (!string.IsNullOrEmpty(updateCityDto.CountryId))
         {
             if (!updateCityDto.CountryId.IsValidGuid())
             {
-                var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+                var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
                 response.ResponseCode = HttpStatusCode.BadRequest;
                 response.Message = msgInvalidRequest.message;
                 response.State = msgInvalidRequest.state;

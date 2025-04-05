@@ -77,7 +77,8 @@ public class CountriesController : ControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(APIResponse<CountryResponse>), StatusCodes.Status200OK)]
-    public async Task<ActionResult> Update(string id, [FromBody] CountryDTO request)
+    public async Task<ActionResult> Update(string id,
+        [FromBody] CountryDTO request)
     {
         var response = await _countryService.UpdateAsync(id, request);
         return response.ToActionResult();

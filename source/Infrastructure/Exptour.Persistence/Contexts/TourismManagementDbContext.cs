@@ -30,7 +30,7 @@ public class TourismManagementDbContext : IdentityDbContext<ApplicationUser, Ide
     public virtual DbSet<Endpoint> Endpoints { get; set; } = null!;
     public virtual DbSet<EndpointRole> EndpointRoles { get; set; } = null!;
     public virtual DbSet<Guide> Guides { get; set; } = null!;
-    public virtual DbSet<GuideAvailability> GuideAvailabilities { get; set; } = null!;
+    public virtual DbSet<GuideSchedule> GuideSchedules { get; set; } = null!;
     public virtual DbSet<Hotel> Hotels { get; set; } = null!;
     public virtual DbSet<HotelImage> HotelImages { get; set; } = null!;
     public virtual DbSet<Language> Languages { get; set; } = null!;

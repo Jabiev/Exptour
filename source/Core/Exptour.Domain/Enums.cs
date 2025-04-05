@@ -114,3 +114,13 @@ public enum ImageType
     [Description("Gallery")] Gallery,
     [Description("Thumbnail")] Thumbnail
 }
+
+public enum GuideStatus
+{
+    [Description("Active")] Active,
+    [Description("OnLeave")] OnLeave,
+    /// <summary>
+    /// The guide is no longer working for the company.
+    /// </summary>
+    [Description("Retired")] Retired
+}

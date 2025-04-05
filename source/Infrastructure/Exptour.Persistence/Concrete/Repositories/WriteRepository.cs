@@ -3,6 +3,8 @@ using Exptour.Domain.Entities.Common;
 using Exptour.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage;
+using Nest;
 
 namespace Exptour.Persistence.Concrete.Repositories;
 
@@ -34,5 +36,10 @@ public class WriteRepository<T> : IWriteRepository<T> where T : BaseEntity
     {
         EntityEntry entry = Table.Update(entity);
         return entry.State == EntityState.Modified;
+    }
+
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+        return await _tourismManagementDbContext.Database.BeginTransactionAsync();
     }
 }

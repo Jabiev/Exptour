@@ -1,0 +1,47 @@
+﻿namespace Exptour.Application.Constants;
+
+public static class ExceptionMessages
+{
+    public const string InvalidLogin = "InvalidLogin";
+    public const string InvalidRequest = "InvalidRequest";
+    public const string InvalidUserToken = "InvalidUserToken";
+    public const string InvalidResetToken = "InvalidResetToken";
+    public const string InvalidToken = "InvalidToken";
+    public const string InvalidDate = "InvalidDate";
+    public const string UnauthorizedUser = "UnauthorizedUser";
+    public const string UserCanNotBeFound = "UserCanNotBeFound";
+    public const string CanNotBeEmpty = "CanNotBeEmpty";
+    public const string EmailInvalidFormat = "EmailInvalidFormat";
+    public const string Success = "Success";
+    public const string MailSentSuccessfully = "MailSentSuccessfully";
+    public const string MailCanNotBeSent = "MailCanNotBeSent";
+    public const string NotFound = "NotFound";
+    public const string ActionNotFound = "ActionNotFound";
+    public const string ScheduleNotFound = "ScheduleNotFound";
+    public const string ExpiredError = "ExpiredError";
+    public const string RefreshTokenExpired = "RefreshTokenExpired";
+    public const string WrongCode = "WrongCode";
+    public const string WrongPassword = "WrongPassword";
+    public const string UserDoesNotExist = "UserDoesNotExist";
+    public const string OneOrMoreLanguagesCanNotBeFound = "OneOrMoreLanguagesCanNotBeFound";
+    public const string LanguagesCanNotBeAssigned = "LanguagesCanNotBeAssigned";
+    public const string ThereAreNoNewLanguages = "ThereAreNoNewLanguages";
+    public const string ExceedingOffDays = "ExceedingOffDays";
+    public const string GuideOnTourOrWillBe = "GuideOnTourOrWillBe";
+    public const string MustHaveAtLeastTwoLanguages = "MustHaveAtLeastTwoLanguages";
+    public const string UserDoesNotActive = "UserDoesNotActive";
+    public const string AlreadyExists = "AlreadyExists";
+    public const string AlreadyAssignedInThisPeriod = "AlreadyAssignedInThisPeriod";
+    public const string EntityHasAssociatedEntities = "EntityHasAssociatedEntities";
+    public const string NoEntityAssociation = "NoEntityAssociation";
+    public const string NoRolesAssigned = "NoRolesAssigned";
+    public const string NoRolesAssignedToUser = "NoRolesAssignedToUser";
+    public const string NoNewRolesToAssign = "NoNewRolesToAssign";
+    public const string RoleDoesNotExist = "RoleDoesNotExist";
+    public const string RolesCanNotBeFound = "RolesCanNotBeFound";
+    public const string RoleAlreadyExists = "RoleAlreadyExists";
+    public const string RoleInUse = "RoleInUse";
+    public const string RoleAccessDenied = "RoleAccessDenied";
+    public const string SomethingWentWrong = "SomethingWentWrong";
+    public const string Failure = "Failure";
+}

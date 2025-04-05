@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Net;
+using static Exptour.Application.Constants.ExceptionMessages;
 
 namespace Exptour.Persistence.Concrete.Services;
 
@@ -51,7 +52,7 @@ public class AuthorizationEndpointService : BaseService, IAuthorizationEndpointS
 
         if (roles is null || roles.Length == 0 || string.IsNullOrEmpty(menu) || string.IsNullOrEmpty(code))
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
@@ -85,7 +86,7 @@ public class AuthorizationEndpointService : BaseService, IAuthorizationEndpointS
 
             if (action is null)
             {
-                var msgActionNotFound = GetMessageByLocalization("ActionNotFound");
+                var msgActionNotFound = GetMessageByLocalization(ActionNotFound);
                 response.ResponseCode = HttpStatusCode.NotFound;
                 response.Message = msgActionNotFound.message;
                 response.State = msgActionNotFound.state;
@@ -115,7 +116,7 @@ public class AuthorizationEndpointService : BaseService, IAuthorizationEndpointS
 
         if (!appRoles.Any())
         {
-            var msgRolesNotFound = GetMessageByLocalization("RolesCanNotFind");
+            var msgRolesNotFound = GetMessageByLocalization(RolesCanNotBeFound);
             response.ResponseCode = HttpStatusCode.NotFound;
             response.Message = msgRolesNotFound.message;
             response.State = msgRolesNotFound.state;
@@ -140,7 +141,7 @@ public class AuthorizationEndpointService : BaseService, IAuthorizationEndpointS
 
         if (string.IsNullOrEmpty(code) || string.IsNullOrEmpty(menu))
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
@@ -155,14 +156,12 @@ public class AuthorizationEndpointService : BaseService, IAuthorizationEndpointS
 
         if (endpoint is null)
         {
-            var msgNotFound = GetMessageByLocalization("NotFound");
+            var msgNotFound = GetMessageByLocalization(NotFound);
             response.ResponseCode = HttpStatusCode.NotFound;
             response.Message = msgNotFound.message;
             response.State = msgNotFound.state;
             return response;
         }
-
-        //var roles = endpoint.EndpointRoles.Select(er => er.Role.Name).ToList() ?? new List<string>();
 
         var roles = await _endpointRoleReadRepository
             .Where(er => er.EndpointId == endpoint.Id)
