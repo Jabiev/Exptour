@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Text;
+using static Exptour.Application.Constants.ExceptionMessages;
 
 namespace Exptour.Persistence.Concrete.Services;
 
@@ -48,13 +49,13 @@ public class CategoryService : BaseService, ICategoryService
                 stringBuilder.AppendLine(error.ErrorMessage);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = stringBuilder.ToString();
-            response.State = GetMessageByLocalization("InvalidRequest").state;
+            response.State = GetMessageByLocalization(InvalidRequest).state;
             return response;
         }
 
         if (await _categoryReadRepository.FirstOrDefaultAsync(c => c.NameEN == categoryDTO.NameEN && !c.IsDeleted, false) is not null)
         {
-            var msgCategoryAlreadyExists = GetMessageByLocalization("AlreadyExists");
+            var msgCategoryAlreadyExists = GetMessageByLocalization(AlreadyExists);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgCategoryAlreadyExists.message;
             response.State = msgCategoryAlreadyExists.state;
@@ -83,7 +84,7 @@ public class CategoryService : BaseService, ICategoryService
 
         if (!id.IsValidGuid())
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
@@ -93,7 +94,7 @@ public class CategoryService : BaseService, ICategoryService
         var category = await _categoryReadRepository.FirstOrDefaultAsync(c => c.Id == Guid.Parse(id) && !c.IsDeleted, false);
         if (category is null)
         {
-            var msgNotFound = GetMessageByLocalization("NotFound");
+            var msgNotFound = GetMessageByLocalization(NotFound);
             response.Message = msgNotFound.message;
             response.ResponseCode = HttpStatusCode.NotFound;
             response.State = msgNotFound.state;
@@ -116,7 +117,7 @@ public class CategoryService : BaseService, ICategoryService
 
         if (pageNumber < 1 || take < 1)
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
@@ -152,7 +153,7 @@ public class CategoryService : BaseService, ICategoryService
 
         if (!id.IsValidGuid())
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
@@ -162,7 +163,7 @@ public class CategoryService : BaseService, ICategoryService
         var category = await _categoryReadRepository.FirstOrDefaultAsync(c => c.Id == Guid.Parse(id) && !c.IsDeleted, false);
         if (category is null)
         {
-            var msgNotFound = GetMessageByLocalization("NotFound");
+            var msgNotFound = GetMessageByLocalization(NotFound);
             response.Message = msgNotFound.message;
             response.ResponseCode = HttpStatusCode.NotFound;
             response.State = msgNotFound.state;

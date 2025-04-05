@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Exptour.Application.Abstract.Repositories.Countries;
 using Exptour.Application.Abstract.Services;
-using Exptour.Application.DTOs.City;
 using Exptour.Application.DTOs.Country;
 using Exptour.Application.Validators.Country;
 using Exptour.Common.Helpers;
@@ -13,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Text;
+using static Exptour.Application.Constants.ExceptionMessages;
 
 namespace Exptour.Persistence.Concrete.Services;
 
@@ -47,13 +47,13 @@ public class CountryService : BaseService, ICountryService
                 stringBuilder.AppendLine(error.ErrorMessage);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = stringBuilder.ToString();
-            response.State = GetMessageByLocalization("InvalidRequest").state;
+            response.State = GetMessageByLocalization(InvalidRequest).state;
             return response;
         }
 
         if (await _countryReadRepository.Table.AnyAsync(c => c.Name.ToLower() == countryDTO.Name.ToLower() && c.IsDeleted == false))
         {
-            var msgCountryExists = GetMessageByLocalization("AlreadyExists");
+            var msgCountryExists = GetMessageByLocalization(AlreadyExists);
             response.Message = msgCountryExists.message;
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.State = msgCountryExists.state;
@@ -74,7 +74,7 @@ public class CountryService : BaseService, ICountryService
 
         if (!id.IsValidGuid())
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
@@ -84,17 +84,16 @@ public class CountryService : BaseService, ICountryService
         var country = await _countryReadRepository.FirstOrDefaultAsync(c => c.Id == Guid.Parse(id) && c.IsDeleted == false);
         if (country is null)
         {
-            var msgNotFound = GetMessageByLocalization("NotFound");
+            var msgNotFound = GetMessageByLocalization(NotFound);
             response.Message = msgNotFound.message;
             response.ResponseCode = HttpStatusCode.NotFound;
             response.State = msgNotFound.state;
             return response;
         }
 
-        //if there are cities in this country, delete them first | LOOK AT THIS
         if (await _countryReadRepository.Table.AnyAsync(c => c.Id == Guid.Parse(id) && c.Cities.Count > 0))
         {
-            var msgCountryHasCities = GetMessageByLocalization("EntityHasAssociatedEntities");
+            var msgCountryHasCities = GetMessageByLocalization(EntityHasAssociatedEntities);
             response.Message = msgCountryHasCities.message;
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.State = msgCountryHasCities.state;
@@ -115,7 +114,7 @@ public class CountryService : BaseService, ICountryService
 
         if (pageNumber < 1 || take < 1)
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
@@ -149,7 +148,7 @@ public class CountryService : BaseService, ICountryService
 
         if (pageNumber < 1 || take < 1)
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
@@ -192,7 +191,7 @@ public class CountryService : BaseService, ICountryService
 
         if (!id.IsValidGuid())
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
@@ -202,7 +201,7 @@ public class CountryService : BaseService, ICountryService
         var country = await _countryReadRepository.FirstOrDefaultAsync(c => c.Id == Guid.Parse(id) && c.IsDeleted == false);
         if (country is null)
         {
-            var msgNotFound = GetMessageByLocalization("NotFound");
+            var msgNotFound = GetMessageByLocalization(NotFound);
             response.Message = msgNotFound.message;
             response.ResponseCode = HttpStatusCode.NotFound;
             response.State = msgNotFound.state;
@@ -220,7 +219,7 @@ public class CountryService : BaseService, ICountryService
 
         if (pageNumber < 1 || take < 1)
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
@@ -237,7 +236,7 @@ public class CountryService : BaseService, ICountryService
 
         if (countries is null || !countries.Any())
         {
-            var msgNotFound = GetMessageByLocalization("NotFound");
+            var msgNotFound = GetMessageByLocalization(NotFound);
             response.Message = msgNotFound.message;
             response.ResponseCode = HttpStatusCode.NotFound;
             response.State = msgNotFound.state;
@@ -263,7 +262,7 @@ public class CountryService : BaseService, ICountryService
 
         if (string.IsNullOrEmpty(id) || !id.IsValidGuid())
         {
-            var msgInvalidRequest = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRequest = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRequest.message;
             response.State = msgInvalidRequest.state;
@@ -280,23 +279,24 @@ public class CountryService : BaseService, ICountryService
                 stringBuilder.AppendLine(error.ErrorMessage);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = stringBuilder.ToString();
-            response.State = GetMessageByLocalization("InvalidRequest").state;
+            response.State = GetMessageByLocalization(InvalidRequest).state;
             return response;
         }
 
         var country = await _countryReadRepository.FirstOrDefaultAsync(c => c.Id == Guid.Parse(id) && c.IsDeleted == false);
         if (country is null)
         {
-            var msgNotFound = GetMessageByLocalization("NotFound");
+            var msgNotFound = GetMessageByLocalization(NotFound);
             response.Message = msgNotFound.message;
             response.ResponseCode = HttpStatusCode.NotFound;
             response.State = msgNotFound.state;
             return response;
         }
 
-        if (await _countryReadRepository.Table.AnyAsync(c => c.Name.ToLower() == countryDTO.Name.ToLower() && c.Id != Guid.Parse(id) && c.IsDeleted == false))
+        if (await _countryReadRepository.Table.AnyAsync(c => c.Name.ToLower() == countryDTO.Name.ToLower() && c.Id != Guid.Parse(id)
+            && !c.IsDeleted))
         {
-            var msgCountryExists = GetMessageByLocalization("AlreadyExists");
+            var msgCountryExists = GetMessageByLocalization(AlreadyExists);
             response.Message = msgCountryExists.message;
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.State = msgCountryExists.state;

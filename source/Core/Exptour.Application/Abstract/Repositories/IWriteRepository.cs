@@ -1,4 +1,6 @@
-﻿namespace Exptour.Application.Abstract.Repositories;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+
+namespace Exptour.Application.Abstract.Repositories;
 
 public interface IWriteRepository<T> : IRepository<T> where T : class
 {
@@ -7,5 +9,6 @@ public interface IWriteRepository<T> : IRepository<T> where T : class
     bool Update(T entity);
     void Remove(T entity);
     void RemoveRange(IQueryable<T> entities);
+    Task<IDbContextTransaction> BeginTransactionAsync();
     Task<int> SaveChangesAsync();
 }

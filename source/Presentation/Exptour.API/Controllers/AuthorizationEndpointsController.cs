@@ -35,7 +35,8 @@ public class AuthorizationEndpointsController : ControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(APIResponse<List<string>>), StatusCodes.Status200OK)]
-    public async Task<ActionResult> GetRolesToEndpoint([FromQuery] string code, [FromQuery] string menu)
+    public async Task<ActionResult> GetRolesToEndpoint([FromQuery] string code,
+        [FromQuery] string menu)
     {
         var response = await _authorizationEndpointService.GetRolesAccordingToEndpointAsync(code, menu);
         return response.ToActionResult();

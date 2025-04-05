@@ -17,7 +17,7 @@ namespace Exptour.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.2")
+                .HasAnnotation("ProductVersion", "9.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -96,9 +96,6 @@ namespace Exptour.Persistence.Migrations
                     b.Property<bool>("IsAdmin")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid?>("LanguageId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime?>("LastLoginDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -154,8 +151,6 @@ namespace Exptour.Persistence.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LanguageId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -572,9 +567,6 @@ namespace Exptour.Persistence.Migrations
 
                     b.HasIndex("CarId");
 
-                    b.HasIndex("FullName")
-                        .IsUnique();
-
                     b.ToTable("Drivers");
                 });
 
@@ -670,9 +662,19 @@ namespace Exptour.Persistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Gender")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -683,15 +685,15 @@ namespace Exptour.Persistence.Migrations
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
-                    b.HasIndex("FullName")
-                        .IsUnique();
+                    b.HasKey("Id");
 
                     b.ToTable("Guides");
                 });
 
-            modelBuilder.Entity("Exptour.Domain.Entities.GuideAvailability", b =>
+            modelBuilder.Entity("Exptour.Domain.Entities.GuideSchedule", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -709,9 +711,6 @@ namespace Exptour.Persistence.Migrations
                     b.Property<Guid>("GuideId")
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("boolean");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -728,7 +727,7 @@ namespace Exptour.Persistence.Migrations
 
                     b.HasIndex("GuideId");
 
-                    b.ToTable("GuideAvailabilities");
+                    b.ToTable("GuideSchedules");
                 });
 
             modelBuilder.Entity("Exptour.Domain.Entities.Hotel", b =>
@@ -1462,15 +1461,6 @@ namespace Exptour.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Exptour.Domain.Entities.ApplicationUser", b =>
-                {
-                    b.HasOne("Exptour.Domain.Entities.Language", "Language")
-                        .WithMany()
-                        .HasForeignKey("LanguageId");
-
-                    b.Navigation("Language");
-                });
-
             modelBuilder.Entity("Exptour.Domain.Entities.Booking", b =>
                 {
                     b.HasOne("Exptour.Domain.Entities.ApplicationUser", "ApplicationUser")
@@ -1606,10 +1596,10 @@ namespace Exptour.Persistence.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("Exptour.Domain.Entities.GuideAvailability", b =>
+            modelBuilder.Entity("Exptour.Domain.Entities.GuideSchedule", b =>
                 {
                     b.HasOne("Exptour.Domain.Entities.Guide", "Guide")
-                        .WithMany("Availabilities")
+                        .WithMany("GuideSchedules")
                         .HasForeignKey("GuideId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1925,9 +1915,9 @@ namespace Exptour.Persistence.Migrations
 
             modelBuilder.Entity("Exptour.Domain.Entities.Guide", b =>
                 {
-                    b.Navigation("Availabilities");
-
                     b.Navigation("Bookings");
+
+                    b.Navigation("GuideSchedules");
 
                     b.Navigation("Offers");
                 });

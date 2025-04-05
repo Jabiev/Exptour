@@ -31,7 +31,7 @@ public class MailService : BaseService, IMailService
                 mail.To.Add(to);
             mail.Subject = subject;
             mail.Body = body;
-            mail.From = new(_configuration["Mail:Username"], _configuration["Mail:DisplayName"], System.Text.Encoding.UTF8);
+            mail.From = new(_configuration["Mail:Username"], _configuration["Mail:DisplayName"], Encoding.UTF8);
 
             using SmtpClient smtp = new()
             {

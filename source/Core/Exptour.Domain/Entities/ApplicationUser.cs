@@ -19,7 +19,6 @@ public class ApplicationUser : IdentityUser<Guid>
 
     [StringLength(50)]
     public string? NationalityAR { get; set; }
-    public Language? Language { get; set; }
     public Gender? Gender { get; set; }
     public DateTime? LastLoginDate { get; set; }
     public string FullName => $"{UserName?.ToSentenceCase()} {LastName?.ToSentenceCase()}";

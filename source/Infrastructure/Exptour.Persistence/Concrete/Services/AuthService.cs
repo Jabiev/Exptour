@@ -1,8 +1,6 @@
 ﻿using Exptour.Application.Abstract.Services;
 using Exptour.Application.DTOs.Auth;
-using Exptour.Application.DTOs.Mail;
 using Exptour.Application.Validators.Auth;
-using Exptour.Application.Validators.Mail;
 using Exptour.Common.Helpers;
 using Exptour.Common.Infrastructure.Services;
 using Exptour.Common.Shared;
@@ -15,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
+using static Exptour.Application.Constants.ExceptionMessages;
 
 namespace Exptour.Persistence.Concrete.Services;
 
@@ -60,7 +59,7 @@ public class AuthService : BaseService, IAuthService
 
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = stringBuilder.ToString();
-            response.State = GetMessageByLocalization("InvalidRequest").state;
+            response.State = GetMessageByLocalization(InvalidRequest).state;
             return response;
         }
 
@@ -70,7 +69,7 @@ public class AuthService : BaseService, IAuthService
             appUser = await _userManager.FindByNameAsync(signInDTO.UserNameOrEmail);
             if (appUser is null)
             {
-                var msgInvalidLogin = GetMessageByLocalization("InvalidLogin");
+                var msgInvalidLogin = GetMessageByLocalization(InvalidLogin);
                 response.Message = msgInvalidLogin.message;
                 response.ResponseCode = HttpStatusCode.BadRequest;
                 response.State = msgInvalidLogin.state;
@@ -82,7 +81,7 @@ public class AuthService : BaseService, IAuthService
 
         if (!signInResult.Succeeded)
         {
-            var msgWrongPassword = GetMessageByLocalization("WrongPassword");
+            var msgWrongPassword = GetMessageByLocalization(WrongPassword);
             response.Message = msgWrongPassword.message;
             response.ResponseCode = HttpStatusCode.NotFound;
             response.State = msgWrongPassword.state;
@@ -90,7 +89,7 @@ public class AuthService : BaseService, IAuthService
         }
         if (!appUser.IsActive)
         {
-            var msgUserNotActive = GetMessageByLocalization("UserDoesNotActive");
+            var msgUserNotActive = GetMessageByLocalization(UserDoesNotActive);
             response.Message = msgUserNotActive.message;
             response.ResponseCode = HttpStatusCode.NotFound;
             response.State = msgUserNotActive.state;
@@ -127,7 +126,7 @@ public class AuthService : BaseService, IAuthService
 
         if (appUser is null)
         {
-            var msgInvalidRefreshToken = GetMessageByLocalization("InvalidRequest");
+            var msgInvalidRefreshToken = GetMessageByLocalization(InvalidRequest);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgInvalidRefreshToken.message;
             response.State = msgInvalidRefreshToken.state;
@@ -136,7 +135,7 @@ public class AuthService : BaseService, IAuthService
 
         if (appUser.RefreshTokenExpiryTime < DateTime.UtcNow)
         {
-            var msgRefreshTokenExpired = GetMessageByLocalization("RefreshTokenExpired");
+            var msgRefreshTokenExpired = GetMessageByLocalization(RefreshTokenExpired);
             response.ResponseCode = HttpStatusCode.BadRequest;
             response.Message = msgRefreshTokenExpired.message;
             response.State = msgRefreshTokenExpired.state;
@@ -161,139 +160,6 @@ public class AuthService : BaseService, IAuthService
         await _userManager.UpdateAsync(appUser);
 
         response.Payload = new TokenResponse(accessToken, refreshToken, appUser.RefreshTokenExpiryTime.ToUAE());
-        response.ResponseCode = HttpStatusCode.OK;
-        return response;
-    }
-
-    public async Task<APIResponse<object?>> Register(RegisterDTO registerDTO)
-    {
-        var response = new APIResponse<object?>();
-
-        RegisterDTOValidator validations = new();
-
-        var result = await validations.ValidateAsync(registerDTO);
-
-        if (!result.IsValid)
-        {
-            StringBuilder stringBuilder = new();
-            foreach (var error in result.Errors)
-                stringBuilder.AppendLine(error.ErrorMessage);
-            response.ResponseCode = HttpStatusCode.UnprocessableContent;
-            response.Message = stringBuilder.ToString();
-            response.State = GetMessageByLocalization("InvalidRequest").state;
-            return response;
-        }
-
-        ApplicationUser appUser = new()
-        {
-            LastName = registerDTO.LastName,
-            UserName = registerDTO.UserName,
-            Email = registerDTO.Email,
-            IsActive = true
-        };
-
-        var identityResult = await _userManager.CreateAsync(appUser, registerDTO.Password);
-
-        if (!identityResult.Succeeded)
-        {
-            StringBuilder stringBuilder = new();
-            foreach (var error in identityResult.Errors)
-                stringBuilder.AppendLine(error.Description);
-            response.ResponseCode = HttpStatusCode.UnprocessableContent;
-            response.Message = stringBuilder.ToString();
-            response.State = GetMessageByLocalization("Failure").state;
-            return response;
-        }
-
-        await _mailService.SendMailAsync(new string[] { registerDTO.Email }, $"Welcome to {_configuration["Mail:DisplayName"]}", @$"Dear {appUser.UserName},
-            We are excited to welcome you to {_configuration["Mail:DisplayName"]}!
-            Your registration was successful, and you can now start exploring our platform.
-            If you have any questions or need assistance, feel free to contact our support team.
-            <br>Best Regards...<br><br><br> {_configuration["Mail:DisplayName"]} Team");
-
-        return response;
-    }
-
-    public async Task<APIResponse<Microsoft.AspNetCore.Mvc.EmptyResult>> PasswordResetAsnyc(PasswordResetDTO passwordResetDTO)
-    {
-        var response = new APIResponse<Microsoft.AspNetCore.Mvc.EmptyResult>();
-
-        PasswordResetDTOValidator validations = new();
-
-        var result = await validations.ValidateAsync(passwordResetDTO);
-
-        if (!result.IsValid)
-        {
-            StringBuilder stringBuilder = new();
-            foreach (var error in result.Errors)
-                stringBuilder.AppendLine(error.ErrorMessage);
-            response.ResponseCode = HttpStatusCode.UnprocessableContent;
-            response.Message = stringBuilder.ToString();
-            response.State = GetMessageByLocalization("InvalidRequest").state;
-            return response;
-        }
-
-        ApplicationUser user = await _userManager.FindByEmailAsync(passwordResetDTO.Email);
-
-        if (user is null)
-        {
-            var msgUserNotFound = GetMessageByLocalization("UserDoesNotFound");
-            response.Message = msgUserNotFound.message;
-            response.ResponseCode = HttpStatusCode.NotFound;
-            response.State = msgUserNotFound.state;
-            return response;
-        }
-
-        string resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-        resetToken = resetToken.UrlEncode();
-
-        await _mailService.SendPasswordResetMailAsync(passwordResetDTO.Email, user.Id.ToString(), resetToken);
-
-        return new APIResponse<Microsoft.AspNetCore.Mvc.EmptyResult>();
-    }
-
-    public async Task<APIResponse<bool>> VerifyResetTokenAsync(VerifyResetTokenDto verifyResetTokenDto)
-    {
-        var response = new APIResponse<bool>();
-
-        VerifyResetTokenDTOValidator validations = new();
-
-        var result = await validations.ValidateAsync(verifyResetTokenDto);
-
-        if (!result.IsValid)
-        {
-            StringBuilder stringBuilder = new();
-            foreach (var error in result.Errors)
-                stringBuilder.AppendLine(error.ErrorMessage);
-            response.ResponseCode = HttpStatusCode.UnprocessableContent;
-            response.Message = stringBuilder.ToString();
-            response.State = GetMessageByLocalization("InvalidRequest").state;
-            return response;
-        }
-
-        ApplicationUser user = await _userManager.FindByIdAsync(verifyResetTokenDto.UserId);
-        if (user is null)
-        {
-            var msgUserNotFound = GetMessageByLocalization("UserDoesNotFound");
-            response.Message = msgUserNotFound.message;
-            response.ResponseCode = HttpStatusCode.NotFound;
-            response.State = msgUserNotFound.state;
-            response.Payload = false;
-            return response;
-        }
-
-        string resetToken = verifyResetTokenDto.ResetToken.UrlDecode();
-
-        response.Payload = await _userManager.VerifyUserTokenAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", resetToken);
-        if (!response.Payload)
-        {
-            var msgInvalidResetToken = GetMessageByLocalization("InvalidResetToken");
-            response.Message = msgInvalidResetToken.message;
-            response.ResponseCode = HttpStatusCode.BadRequest;
-            response.State = msgInvalidResetToken.state;
-            return response;
-        }
-
         response.ResponseCode = HttpStatusCode.OK;
         return response;
     }

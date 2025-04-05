@@ -1,9 +1,9 @@
-﻿using Exptour.Common.Shared;
-using Google.Apis.Auth;
+﻿using Exptour.Application.DTOs.Google;
+using Exptour.Common.Shared;
 
 namespace Exptour.Application.Abstract.Services;
 
 public interface IGoogleService
 {
-    Task<APIResponse<GoogleJsonWebSignature.Payload>> ValidateGoogleTokenAsync(string idToken);
+    Task<APIResponse<GoogleResponse>> GoogleLoginAsync(string idToken);
 }

@@ -64,7 +64,8 @@ public class CitiesController : ControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(APIResponse<CityResponse>), StatusCodes.Status200OK)]
-    public async Task<ActionResult> Update(string id, [FromBody] UpdateCityDTO request)
+    public async Task<ActionResult> Update(string id,
+        [FromBody] UpdateCityDTO request)
     {
         var response = await _cityService.UpdateAsync(id, request);
         return response.ToActionResult();

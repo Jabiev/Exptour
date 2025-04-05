@@ -10,8 +10,8 @@ using Exptour.Application.Abstract.Repositories.Countries;
 using Exptour.Application.Abstract.Repositories.Drivers;
 using Exptour.Application.Abstract.Repositories.EndpointRoles;
 using Exptour.Application.Abstract.Repositories.Endpoints;
-using Exptour.Application.Abstract.Repositories.GuideAvailabilities;
 using Exptour.Application.Abstract.Repositories.Guides;
+using Exptour.Application.Abstract.Repositories.GuideSchedules;
 using Exptour.Application.Abstract.Repositories.HotelImages;
 using Exptour.Application.Abstract.Repositories.Hotels;
 using Exptour.Application.Abstract.Repositories.Languages;
@@ -36,8 +36,8 @@ using Exptour.Persistence.Concrete.Repositories.Countries;
 using Exptour.Persistence.Concrete.Repositories.Drivers;
 using Exptour.Persistence.Concrete.Repositories.EndpointRoles;
 using Exptour.Persistence.Concrete.Repositories.Endpoints;
-using Exptour.Persistence.Concrete.Repositories.GuideAvailabilities;
 using Exptour.Persistence.Concrete.Repositories.Guides;
+using Exptour.Persistence.Concrete.Repositories.GuideSchedules;
 using Exptour.Persistence.Concrete.Repositories.HotelImages;
 using Exptour.Persistence.Concrete.Repositories.Hotels;
 using Exptour.Persistence.Concrete.Repositories.Languages;
@@ -91,8 +91,8 @@ public static class HostingExtensions
         services.AddScoped<IEndpointRoleWriteRepository, EndpointRoleWriteRepository>();
         services.AddScoped<IEndpointReadRepository, EndpointReadRepository>();
         services.AddScoped<IEndpointWriteRepository, EndpointWriteRepository>();
-        services.AddScoped<IGuideAvailabilityReadRepository, GuideAvailabilityReadRepository>();
-        services.AddScoped<IGuideAvailabilityWriteRepository, GuideAvailabilityWriteRepository>();
+        services.AddScoped<IGuideScheduleReadRepository, GuideScheduleReadRepository>();
+        services.AddScoped<IGuideScheduleWriteRepository, GuideScheduleWriteRepository>();
         services.AddScoped<IGuideReadRepository, GuideReadRepository>();
         services.AddScoped<IGuideWriteRepository, GuideWriteRepository>();
         services.AddScoped<IHotelImageReadRepository, HotelImageReadRepository>();
@@ -129,6 +129,8 @@ public static class HostingExtensions
         services.AddScoped<ICountryService, CountryService>();
         services.AddScoped<ICityService, CityService>();
         services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<ILanguageService, LanguageService>();
+        services.AddScoped<IGuideService, GuideService>();
 
         #endregion
     }
