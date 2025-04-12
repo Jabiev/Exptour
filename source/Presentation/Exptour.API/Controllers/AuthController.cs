@@ -24,10 +24,10 @@ public class AuthController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    [ProducesResponseType(typeof(APIResponse<TokenResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(APIResponse<LoginResponse>), StatusCodes.Status200OK)]
     public async Task<ActionResult> Login([FromBody] SignInDTO request)
     {
-        var response = await _authService.Login(request);
+        var response = await _authService.LoginAsync(request);
         return response.ToActionResult();
     }
 
@@ -49,7 +49,30 @@ public class AuthController : ControllerBase
     [ProducesResponseType(typeof(APIResponse<TokenResponse>), StatusCodes.Status200OK)]
     public async Task<ActionResult> RefreshToken([FromQuery] string refreshToken)
     {
-        var response = await _authService.RefreshToken(refreshToken);
+        var response = await _authService.RefreshTokenAsync(refreshToken);
         return response.ToActionResult();
     }
+
+    [HttpPost("[Action]")]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(APIResponse<SendOTPResponse>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> SendOTP([FromBody] string email)
+    {
+        var response = await _authService.SendOTPViaEmailAsync(email);
+        return response.ToActionResult();
+    }
+
+    [HttpPost("[Action]")]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(APIResponse<VerifyOTPResponse>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> VerifyOTP([FromBody] VerifyOTPDTO request)
+    {
+        var response = await _authService.VerifyOTPAsync(request);
+        return response.ToActionResult();
+    }
+
 }

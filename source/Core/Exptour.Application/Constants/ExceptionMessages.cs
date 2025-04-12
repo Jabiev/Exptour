@@ -8,6 +8,9 @@ public static class ExceptionMessages
     public const string InvalidResetToken = "InvalidResetToken";
     public const string InvalidToken = "InvalidToken";
     public const string InvalidDate = "InvalidDate";
+    public const string InvalidOTP = "InvalidOTP";
+    public const string AttemptExceeded = "AttemptExceeded";
+    public const string TooManyRequests = "TooManyRequests";
     public const string UnauthorizedUser = "UnauthorizedUser";
     public const string UserCanNotBeFound = "UserCanNotBeFound";
     public const string CanNotBeEmpty = "CanNotBeEmpty";
@@ -30,6 +33,8 @@ public static class ExceptionMessages
     public const string GuideOnTourOrWillBe = "GuideOnTourOrWillBe";
     public const string MustHaveAtLeastTwoLanguages = "MustHaveAtLeastTwoLanguages";
     public const string UserDoesNotActive = "UserDoesNotActive";
+    public const string OTPAlreadySent = "OTPAlreadySent";
+    public const string PendingVerification = "PendingVerification";
     public const string AlreadyExists = "AlreadyExists";
     public const string AlreadyAssignedInThisPeriod = "AlreadyAssignedInThisPeriod";
     public const string EntityHasAssociatedEntities = "EntityHasAssociatedEntities";

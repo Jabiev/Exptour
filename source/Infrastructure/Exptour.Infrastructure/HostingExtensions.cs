@@ -16,6 +16,7 @@ public static class HostingExtensions
     {
         services.AddSingleton<IMessageQueueService, RabbitMqService>();
         services.AddHostedService<RabbitMqConsumerService>();
+        services.AddScoped<IOTPService, OTPService>();
         services.AddScoped<IJWTService, JWTService>();
         services.AddScoped<IGoogleService, GoogleService>();
         services.AddScoped<IMailService, MailService>();

@@ -113,18 +113,6 @@ public static class Helper
         return null;
     }
 
-    public static bool IsValidEmail(this string? value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-            return false;
-
-        string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-        return Regex.IsMatch(value, pattern, RegexOptions.IgnoreCase);
-    }
-
-    public static bool IsValidGuid(this string value)
-        => Guid.TryParse(value, out _);
-
     public static string GetByLanguage(string? En, string? Ar, Language language)
         => language.Equals(Language.English) ? En : Ar;
 
@@ -136,6 +124,18 @@ public static class Helper
         var culture = new System.Globalization.CultureInfo("en-US");
         return culture.DateTimeFormat.GetMonthName(month);
     }
+
+    public static bool IsValidEmail(this string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+        return Regex.IsMatch(value, pattern, RegexOptions.IgnoreCase);
+    }
+
+    public static bool IsValidGuid(this string value)
+        => Guid.TryParse(value, out _);
 }
 
 public static class CustomCoders

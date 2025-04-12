@@ -209,6 +209,17 @@ public static class HostingExtensions
 
         #endregion
 
+        #region OTP & Redis
+
+        builder.Services.Configure<Application.Settings.OTP>(builder.Configuration.GetSection("OTPGenerate"));
+
+        builder.Services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = builder.Configuration["Redis:ConnectionString"];
+        });
+
+        #endregion
+
         return builder.Build();
     }
 }
