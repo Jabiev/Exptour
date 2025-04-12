@@ -5,6 +5,8 @@ namespace Exptour.Application.Abstract.Services;
 
 public interface IAuthService
 {
-    Task<APIResponse<TokenResponse>> Login(SignInDTO signInDTO);
-    Task<APIResponse<TokenResponse>> RefreshToken(string requestRefreshToken);
+    Task<APIResponse<LoginResponse>> LoginAsync(SignInDTO signInDTO);
+    Task<APIResponse<TokenResponse>> RefreshTokenAsync(string requestRefreshToken);
+    Task<APIResponse<SendOTPResponse>> SendOTPViaEmailAsync(string email);
+    Task<APIResponse<VerifyOTPResponse>> VerifyOTPAsync(VerifyOTPDTO verifyOTPRequest);
 }
