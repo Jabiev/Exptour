@@ -85,7 +85,11 @@ public static class HostingExtensions
 
         #endregion
 
+        #region HttpContextAccessor
+
         builder.Services.AddHttpContextAccessor();
+
+        #endregion
 
         #region Google
 
@@ -151,7 +155,11 @@ public static class HostingExtensions
 
         #endregion
 
+        #region AutoMapper
+
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+        #endregion
 
         #region Hosted Services (Background Services) & Health Checks
 
