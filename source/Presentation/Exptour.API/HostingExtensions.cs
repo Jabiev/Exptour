@@ -2,9 +2,11 @@
 using Exptour.Domain.Entities;
 using Exptour.Infrastructure;
 using Exptour.Infrastructure.ElasticSearch;
+using Exptour.Infrastructure.Logging.Serilog;
 using Exptour.Persistence;
 using Exptour.Persistence.Contexts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +14,12 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Nest;
+using NpgsqlTypes;
 using Quartz;
+using Serilog;
+using Serilog.Sinks.PostgreSQL;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -67,7 +73,10 @@ public static class HostingExtensions
                     ValidIssuer = builder.Configuration["JWTSettings:Issuer"],
                     ValidAudience = builder.Configuration["JWTSettings:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTSettings:SecurityKey"])),
-                    ClockSkew = TimeSpan.Zero
+                    ClockSkew = TimeSpan.Zero,
+
+                    NameClaimType = ClaimTypes.Name,
+                    RoleClaimType = ClaimTypes.Role
                 };
             });
 
@@ -224,6 +233,43 @@ public static class HostingExtensions
         builder.Services.AddStackExchangeRedisCache(options =>
         {
             options.Configuration = builder.Configuration["Redis:ConnectionString"];
+        });
+
+        #endregion
+
+        #region Serilog & Http Logging
+
+        builder.Host.UseSerilog((context, services, loggerConfiguration) =>
+        {
+            loggerConfiguration
+                .ReadFrom.Configuration(context.Configuration)
+                .MinimumLevel.Is(context.HostingEnvironment.IsDevelopment()
+                    ? Serilog.Events.LogEventLevel.Verbose
+                    : Serilog.Events.LogEventLevel.Information)
+                .WriteTo.PostgreSQL(
+                    connectionString: builder.Configuration.GetConnectionString("PostgreSQL"),
+                    tableName: "logS",
+                    needAutoCreateTable: true,
+                    columnOptions: new Dictionary<string, ColumnWriterBase>
+                    {
+                        {"message", new RenderedMessageColumnWriter(NpgsqlDbType.Text)},
+                        {"message_template", new MessageTemplateColumnWriter(NpgsqlDbType.Text)},
+                        {"level", new LevelColumnWriter(true , NpgsqlDbType.Varchar)},
+                        {"time_stamp", new TimestampColumnWriter(NpgsqlDbType.Timestamp)},
+                        {"exception", new ExceptionColumnWriter(NpgsqlDbType.Text)},
+                        {"log_event", new LogEventSerializedColumnWriter(NpgsqlDbType.Json)},
+                        {"user_name", new UserNameColumnWriter()}
+                    })
+                .Enrich.FromLogContext();
+        });
+
+        builder.Services.AddHttpLogging(logging =>
+        {
+            logging.LoggingFields = HttpLoggingFields.All;
+            logging.RequestHeaders.Add("sec-ch-ua");
+            logging.MediaTypeOptions.AddText("application/javascript");
+            logging.RequestBodyLogLimit = 4096;
+            logging.ResponseBodyLogLimit = 4096;
         });
 
         #endregion

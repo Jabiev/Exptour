@@ -1,4 +1,6 @@
 using Exptour.API;
+using Serilog;
+using Serilog.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseSerilogRequestLogging();
+
+app.UseHttpLogging();
+
 app.MapGet("/", handler =>
 {
     handler.Response.Redirect("/swagger/index.html", permanent: false);
@@ -32,6 +38,16 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.Use(async (context, next) =>
+{
+    var authName = context?.User?.Identity?.IsAuthenticated is not null || true 
+        ? context?.User?.Identity?.Name
+        : "unknown";
+    LogContext.PushProperty("user_name", authName);
+
+    await next();
+});
 
 app.MapControllers();
 
