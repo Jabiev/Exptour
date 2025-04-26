@@ -1,4 +1,5 @@
 using Exptour.API;
+using Exptour.Infrastructure.Middlewares;
 using Serilog;
 using Serilog.Context;
 
@@ -22,6 +23,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.ConfigureExceptionHandler<Program>(app.Services.GetRequiredService<ILogger<Program>>());
 
 app.UseSerilogRequestLogging();
 
