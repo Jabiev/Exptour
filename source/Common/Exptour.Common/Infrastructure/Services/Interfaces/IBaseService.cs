@@ -4,7 +4,7 @@ public interface IBaseService
 {
     string GetHeaderByName(string headerName);
     string? GetAuthToken();
-    (string authId, string authRole) GetAuthData();
+    (string authId, string authRole, string authName) GetAuthData();
     (string message, string state) GetMessageByLocalization(string key);
     Language GetCurrentLanguage();
 }

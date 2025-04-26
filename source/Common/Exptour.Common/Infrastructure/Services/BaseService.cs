@@ -33,10 +33,11 @@ public class BaseService : IBaseService
         return authToken;
     }
 
-    public (string authId, string authRole) GetAuthData()
+    public (string authId, string authRole, string authName) GetAuthData()
     {
         var authId = string.Empty;
         var authRole = string.Empty;
+        var authName = string.Empty;
         string? authToken = GetAuthToken();
         if (!string.IsNullOrEmpty(authToken))
         {
@@ -52,9 +53,14 @@ public class BaseService : IBaseService
                 or ClaimTypes.Role
                 or "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value ?? string.Empty;
             authRole = role;
+
+            var name = securityToken?.Claims.FirstOrDefault(claim => claim.Type is "name"
+                or ClaimTypes.Name
+                or "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")?.Value ?? string.Empty;
+            authName = name;
         }
 
-        return (authId, authRole);
+        return (authId, authRole, authName);
     }
 
     public Language GetCurrentLanguage()
