@@ -2,7 +2,7 @@
 
 This repository contains the backend configuration for the **ExpTour App**, a multilingual tour guide platform with features such as OTP verification, multilingual messaging, and integrations with RabbitMQ, Redis, PostgreSQL, Google Authentication, and Elasticsearch.
 
----
+---    Brief Summary
 
 ## 🚀 Features
 
