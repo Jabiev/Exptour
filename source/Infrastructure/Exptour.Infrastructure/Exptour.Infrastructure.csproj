@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CloudinaryDotNet" Version="1.27.6" />
     <PackageReference Include="DetectLanguage" Version="1.0.0" />
     <PackageReference Include="Elasticsearch.Net" Version="7.17.4" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.3.0" />
@@ -28,10 +29,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Exptour.Application\Exptour.Application.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Storage\" />
   </ItemGroup>
 
 </Project>

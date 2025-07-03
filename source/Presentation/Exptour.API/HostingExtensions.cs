@@ -1,8 +1,10 @@
-﻿using Exptour.Application.BackgroundServices.Guide;
+﻿using CloudinaryDotNet;
+using Exptour.Application.BackgroundServices.Guide;
 using Exptour.Domain.Entities;
 using Exptour.Infrastructure;
 using Exptour.Infrastructure.ElasticSearch;
 using Exptour.Infrastructure.Logging.Serilog;
+using Exptour.Infrastructure.Storage;
 using Exptour.Persistence;
 using Exptour.Persistence.Contexts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -270,6 +272,19 @@ public static class HostingExtensions
             logging.MediaTypeOptions.AddText("application/javascript");
             logging.RequestBodyLogLimit = 4096;
             logging.ResponseBodyLogLimit = 4096;
+        });
+
+        #endregion
+
+        #region Cloudinary Storage
+
+        builder.Services.Configure<CloudinarySettings>(config =>builder.Configuration.GetSection("CloudinarySettings"));
+        builder.Services.AddSingleton(sp =>
+        {
+            var config = builder.Configuration.GetSection("CloudinarySettings").Get<CloudinarySettings>();
+
+            var account = new Account(config.CloudName, config.ApiKey, config.ApiSecret);
+            return new Cloudinary(account);
         });
 
         #endregion

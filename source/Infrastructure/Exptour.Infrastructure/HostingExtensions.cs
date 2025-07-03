@@ -6,6 +6,7 @@ using Exptour.Infrastructure.Google;
 using Exptour.Infrastructure.JWT;
 using Exptour.Infrastructure.Messaging;
 using Exptour.Infrastructure.Services;
+using Exptour.Infrastructure.Storage.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Exptour.Infrastructure;
@@ -16,6 +17,7 @@ public static class HostingExtensions
     {
         services.AddSingleton<IMessageQueueService, RabbitMqService>();
         services.AddHostedService<RabbitMqConsumerService>();
+        services.AddScoped<CloudinaryService>();
         services.AddScoped<IOTPService, OTPService>();
         services.AddScoped<IJWTService, JWTService>();
         services.AddScoped<IGoogleService, GoogleService>();
