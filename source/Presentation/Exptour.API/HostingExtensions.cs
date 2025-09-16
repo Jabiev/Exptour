@@ -168,7 +168,7 @@ public static class HostingExtensions
 
         #region AutoMapper
 
-        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        builder.Services.AddAutoMapper(_ => { }, AppDomain.CurrentDomain.GetAssemblies());
 
         #endregion
 
@@ -278,7 +278,7 @@ public static class HostingExtensions
 
         #region Cloudinary Storage
 
-        builder.Services.Configure<CloudinarySettings>(config =>builder.Configuration.GetSection("CloudinarySettings"));
+        builder.Services.Configure<CloudinarySettings>(config => builder.Configuration.GetSection("CloudinarySettings"));
         builder.Services.AddSingleton(sp =>
         {
             var config = builder.Configuration.GetSection("CloudinarySettings").Get<CloudinarySettings>();
