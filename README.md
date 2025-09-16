@@ -2,6 +2,10 @@
 
 This repository contains the backend configuration for the **ExpTour App**, a multilingual tour guide platform with features such as OTP verification, multilingual messaging, and integrations with RabbitMQ, Redis, PostgreSQL, Google Authentication, and Elasticsearch.
 
+<p align="center">
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=500&size=24&pause=1000&color=FF5F1F&width=435&lines=🚧+Work+in+Progress+🚧;New+Features+Coming+Soon...;I+will+inform+you+in+details;why+you+will+need+the+project" alt="Typing SVG" />
+</p>
+
 ---    Brief Summary
 
 ## 🚀 Features
