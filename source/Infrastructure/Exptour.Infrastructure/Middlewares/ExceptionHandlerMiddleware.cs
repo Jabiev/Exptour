@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Net.Mime;
@@ -10,7 +11,7 @@ namespace Exptour.Infrastructure.Middlewares;
 
 public static class ExceptionHandlerMiddleware
 {
-    public static void ConfigureExceptionHandler<T>(this IApplicationBuilder app, ILogger<T> logger)
+    public static void ConfigureExceptionHandler(this IApplicationBuilder app)
     {
         app.UseExceptionHandler(errorApp =>
         {
@@ -24,8 +25,6 @@ public static class ExceptionHandlerMiddleware
                 if (contextFeature is not null)
                 {
                     var errorId = Guid.NewGuid();
-
-                    logger.LogError(contextFeature.Error, $"❌ Exception caught: {contextFeature.Error.Message} | ErrorId: {errorId}");
 
                     var errorResponse = new
                     {
