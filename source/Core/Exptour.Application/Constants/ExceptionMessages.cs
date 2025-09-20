@@ -9,6 +9,7 @@ public static class ExceptionMessages
     public const string InvalidToken = "InvalidToken";
     public const string InvalidDate = "InvalidDate";
     public const string InvalidOTP = "InvalidOTP";
+    public const string InvalidData = "InvalidData";
     public const string AttemptExceeded = "AttemptExceeded";
     public const string TooManyRequests = "TooManyRequests";
     public const string UnauthorizedUser = "UnauthorizedUser";
