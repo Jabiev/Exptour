@@ -62,7 +62,7 @@ public class OTPService : BaseService, IOTPService
             var attemptCountStr = await _cache.GetStringAsync(rateLimitKey);
             int attemptCount = string.IsNullOrEmpty(attemptCountStr) ? 0 : int.Parse(attemptCountStr);
 
-            if (attemptCount >= 3)
+            if (attemptCount >= _otpSettings.AttemptCount)
             {
                 var msgRateLimit = GetMessageByLocalization(TooManyRequests);
                 response.ResponseCode = HttpStatusCode.TooManyRequests;
@@ -150,7 +150,7 @@ public class OTPService : BaseService, IOTPService
 
             if (string.IsNullOrEmpty(cachedOTPJson))
             {
-                var msgInvalidOTP = GetMessageByLocalization(InvalidOTP);
+                var msgInvalidOTP = GetMessageByLocalization(InvalidData);
                 response.ResponseCode = HttpStatusCode.BadRequest;
                 response.Message = msgInvalidOTP.message;
                 return response;
@@ -159,7 +159,7 @@ public class OTPService : BaseService, IOTPService
             var otpData = JsonSerializer.Deserialize<OTPData>(cachedOTPJson);
             if (otpData is null)
             {
-                var msgInvalidOTP = GetMessageByLocalization(InvalidOTP);
+                var msgInvalidOTP = GetMessageByLocalization(InvalidData);
                 response.ResponseCode = HttpStatusCode.BadRequest;
                 response.Message = msgInvalidOTP.message;
                 return response;

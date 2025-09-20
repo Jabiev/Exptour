@@ -20,6 +20,7 @@ using NpgsqlTypes;
 using Quartz;
 using Serilog;
 using Serilog.Sinks.PostgreSQL;
+using StackExchange.Redis;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Security.Claims;
 using System.Text;
@@ -232,9 +233,17 @@ public static class HostingExtensions
 
         builder.Services.Configure<Application.Settings.OTP>(builder.Configuration.GetSection("OTPGenerate"));
 
+        var redisConfig = builder.Configuration.GetSection("Redis");
+
         builder.Services.AddStackExchangeRedisCache(options =>
         {
-            options.Configuration = builder.Configuration["Redis:ConnectionString"];
+            options.ConfigurationOptions = new ConfigurationOptions
+            {
+                EndPoints = { $"{redisConfig["Host"]}:{redisConfig["Port"]}" },
+                Password = redisConfig["Password"],
+                User = redisConfig["User"],
+                Ssl = bool.Parse(redisConfig["Ssl"] ?? "false")
+            };
         });
 
         #endregion
